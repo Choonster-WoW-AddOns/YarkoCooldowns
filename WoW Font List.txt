@@ -1,0 +1,21 @@
+Fonts in interface.MPQ as of 10/4/2013
+
+2002.ttf
+2002B.ttf
+ARHei.ttf
+ARIALN.TTF
+ARKai_C.ttf
+ARKai_T.ttf
+bHEI00M.ttf
+bHEI01B.ttf
+bKAI00M.ttf
+bLEI00D.ttf
+FRIZQT__.TTF
+FRIZQT___CYR.TTF
+K_Damage.TTF
+K_Pagetext.TTF
+MORPHEUS.TTF
+MORPHEUS_CYR.TTF
+NIM_____.ttf
+SKURRI.TTF
+SKURRI_CYR.TTF

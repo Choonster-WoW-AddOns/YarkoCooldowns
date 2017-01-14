@@ -1,0 +1,47 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+	
+	<Frame name="YarkoCooldowns_MainFrame" hidden="false" parent="UIParent">
+		<Scripts>
+			<OnLoad>
+				YarkoCooldowns.OnLoad(self);
+			</OnLoad>
+			<OnEvent>
+				YarkoCooldowns.OnEvent(self, event, ...);
+			</OnEvent>
+			<OnUpdate>
+				YarkoCooldowns.OnUpdate(self, elapsed);
+			</OnUpdate>
+		</Scripts>
+	</Frame>
+
+	<Frame name="YarkoCooldowns_CounterTemplate" virtual="true">
+		<Size>
+			<AbsDimension x="36" y="36"/>
+		</Size>
+		<Layers>
+			<Layer level="ARTWORK">
+				<FontString name="$parentText1" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="text1">
+					<Anchors>
+						<Anchor point="CENTER">
+							<Offset>
+								<AbsDimension x="0" y="0"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+				<FontString name="$parentText2" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="text2">
+					<Anchors>
+						<Anchor point="TOP" relativeTo="$parentText1" relativePoint="BOTTOM">
+							<Offset>
+								<AbsDimension x="0" y="3"/>
+							</Offset>
+						</Anchor>
+					</Anchors>
+				</FontString>
+			</Layer>
+		</Layers>
+	</Frame>
+	
+</Ui>
+

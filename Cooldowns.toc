@@ -1,0 +1,10 @@
+## Interface: 50400
+## Title: Cooldowns 4.3.1
+## Notes: Display cooldown counters on action buttons
+## SavedVariables: YarkoCooldowns_SavedVars
+Localization.lua
+Localization.de.lua
+Cooldowns.lua
+Cooldowns.xml
+Cooldowns_Options.lua
+Cooldowns_Options.xml
