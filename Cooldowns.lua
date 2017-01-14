@@ -71,9 +71,15 @@ function YarkoCooldowns.OnEvent(self, event, ...)
 	if (event == "ACTIONBAR_UPDATE_COOLDOWN") then
 		for i, button in ipairs(ActionBarButtonEventsFrame.frames) do
 			if (button.cooldown:IsVisible()) then
-				local start, duration, enable, charges = GetActionCooldown(button.action);
+				local start, duration, enable, modRate;
 				
-				if (start and (not charges or charges == 0)) then
+				if button.spellID then
+					start, duration, enable, modRate = GetSpellCooldown(button.spellID);
+				else
+					start, duration, enable, modRate = GetActionCooldown(button.action);
+				end
+				
+				if start > 0 then
 					YarkoCooldowns.StartCooldown(button.cooldown, start, duration, (duration > 0 and duration < 1 and 0) or 1);
 				end
 			end
@@ -82,8 +88,8 @@ function YarkoCooldowns.OnEvent(self, event, ...)
 end
 
 
-function YarkoCooldowns.SetCooldown(self, start, duration, charges)
-	if (not self.noCooldownCount and start and (not charges or charges == 0)) then
+function YarkoCooldowns.SetCooldown(self, start, duration, modRate)
+	if (not self.noCooldownCount and start > 0) then
 		YarkoCooldowns.StartCooldown(self, start, duration, (duration > 0 and duration < 1 and 0) or 1);
 	end
 end

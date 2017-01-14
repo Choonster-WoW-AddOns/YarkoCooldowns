@@ -1,5 +1,6 @@
-## Interface: 50400
-## Title: Cooldowns 4.3.1
+## Interface: 70100
+## Title: Cooldowns 4.3.2
+## Version: 4.3.2
 ## Notes: Display cooldown counters on action buttons
 ## SavedVariables: YarkoCooldowns_SavedVars
 ## Author: Yarko, Updates by Choonster
