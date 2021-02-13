@@ -1,3 +1,6 @@
+## 4.4.1
+- Fix incorrect variable name
+
 ## 4.4
 - Ignore default UI elements that use Cooldown widgets but aren't cooldowns
 - Bump TOC Interface version to 9.0.2
