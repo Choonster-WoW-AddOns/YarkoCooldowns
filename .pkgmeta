@@ -1,0 +1,5 @@
+﻿package-as: Cooldowns
+
+manual-changelog:
+    filename: CHANGELOG.md
+    markup-type: markdown

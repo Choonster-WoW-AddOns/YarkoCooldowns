@@ -1,6 +1,6 @@
 ## Interface: 90002
-## Title: Cooldowns 4.3.2
-## Version: 4.3.2
+## Title: Cooldowns @project-version@
+## Version: @project-version@
 ## Notes: Display cooldown counters on action buttons
 ## SavedVariables: YarkoCooldowns_SavedVars
 ## Author: Yarko, Updates by Choonster
