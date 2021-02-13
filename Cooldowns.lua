@@ -41,6 +41,8 @@ local SpecialAddon;
 
 local OutlineList = {nil, "OUTLINE", "THICKOUTLINE"};
 
+local ProcessedDefaultUIAddOns = {}
+
 function YarkoCooldowns.Test()
 	c=0;
 	for k, v in pairs(ActiveCounters) do
@@ -49,11 +51,22 @@ function YarkoCooldowns.Test()
 end
 
 function YarkoCooldowns.OnLoad(self)
+	self:RegisterEvent("ADDON_LOADED");
 	self:RegisterEvent("PLAYER_LOGIN");
-	self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");
+	self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN");	
 end
 
 function YarkoCooldowns.OnEvent(self, event, ...)
+	if (event == "ADDON_LOADED") then
+		local addOnName = ...;
+		
+		if (addOnName == "Blizzard_GarrisonUI" or addOnName == "Blizzard_PVPUI") then
+			YarkoCooldowns.DisableCooldownsForDefaultUIElements();
+		end
+
+		return;
+	end
+	
 	if (event == "PLAYER_LOGIN") then
 		SpecialAddon = Bartender4;
 		
@@ -64,6 +77,8 @@ function YarkoCooldowns.OnEvent(self, event, ...)
 		
 		-- So hook directly to the cooldown widget function
 		hooksecurefunc(getmetatable(ActionButton1Cooldown).__index, "SetCooldown", YarkoCooldowns.SetCooldown)
+
+		YarkoCooldowns.DisableCooldownsForDefaultUIElements();
 		
 		return;
 	end
@@ -84,6 +99,52 @@ function YarkoCooldowns.OnEvent(self, event, ...)
 				end
 			end
 		end
+	end
+end
+
+
+function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
+	if (IsAddOnLoaded("Blizzard_GarrisonUI") and not ProcessedDefaultUIAddOns.Blizzard_GarrisonUI) then
+		-- Ignore the follower experience bar for Covenant Mission rewards.
+		-- The follower frames are created on-demand from a frame pool, so we hook the mixin functions before the frames are created.
+
+		ProcessedDefaultUIAddOns.Blizzard_GarrisonUI = true;
+
+		local function AdventuresRewardsFollowerMixin_DisableCooldownCount(self)
+			self.noCooldownCount = true;
+		end
+
+		hooksecurefunc(AdventuresRewardsFollowerMixin, "SetFollowerInfo", AdventuresRewardsFollowerMixin_DisableCooldownCount);
+		hooksecurefunc(AdventuresRewardsFollowerMixin, "UpdateExperience", AdventuresRewardsFollowerMixin_DisableCooldownCount);
+	end
+	
+	if (IsAddOnLoaded("Blizzard_PVPUI") and not ProcessedDefaultUIAddOns.Blizzard_PVPUI) then
+		-- Ignore the Honor Level display.
+		-- PVPUIFrame is created statically, so we apply the changes directly to the HonorLevelDisplay frame.
+
+		ProcessedDefaultUIAddOns.Blizzard_PVPUI =  true;
+
+		PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.noCooldownCount = true;
+	end
+
+	if (not ProcessedDefaultUIAddOns.Blizzard_UIWidgets) then
+		-- Ignore the UIWidgetBaseCircularStatusBarTemplate used by UIWidgetTemplateDiscreteProgressSteps for The Eye of the Jailer in the Maw.
+		-- Ignore the UIWidgetBaseControlZoneTemplate used by UIWidgetTemplateCaptureZone/UIWidgetTemplateZoneControl for what seems to be an event in the Sophia's Overture subzone of Bastion.
+		-- UIWidgets are created on-demand from frame pools, so we hook the mixin functions before the frames are created.
+
+		ProcessedDefaultUIAddOns.Blizzard_UIWidgets = true;
+
+		local function UIWidgetBaseCircularStatusBar_DisableCooldownCount(self)
+			self.noCooldownCount = true;
+		end
+
+		local function UIWidgetBaseControlZone_DisableCooldownCount(self)
+			self.UncapturedSection.noCooldownCount = true;
+			self.Progress.noCooldownCount = true;
+		end
+
+		hooksecurefunc(UIWidgetBaseCircularStatusBarTemplateMixin, "Setup", UIWidgetBaseCircularStatusBar_DisableCooldownCount);
+		hooksecurefunc(UIWidgetBaseControlZoneTemplate, "Setup", UIWidgetBaseControlZone_DisableCooldownCount);
 	end
 end
 
