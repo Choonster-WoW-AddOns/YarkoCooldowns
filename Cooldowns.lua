@@ -144,7 +144,7 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 		end
 
 		hooksecurefunc(UIWidgetBaseCircularStatusBarTemplateMixin, "Setup", UIWidgetBaseCircularStatusBar_DisableCooldownCount);
-		hooksecurefunc(UIWidgetBaseControlZoneTemplate, "Setup", UIWidgetBaseControlZone_DisableCooldownCount);
+		hooksecurefunc(UIWidgetBaseControlZoneTemplateMixin, "Setup", UIWidgetBaseControlZone_DisableCooldownCount);
 	end
 end
 
