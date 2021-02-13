@@ -1,4 +1,4 @@
-## Interface: 70100
+## Interface: 90002
 ## Title: Cooldowns 4.3.2
 ## Version: 4.3.2
 ## Notes: Display cooldown counters on action buttons
