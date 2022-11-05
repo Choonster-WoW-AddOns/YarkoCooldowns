@@ -1,0 +1,16 @@
+{
+    "$schema": "https://raw.githubusercontent.com/sumneko/vscode-lua/master/setting/schema.json",
+    "runtime.version": "Lua 5.1",
+    "diagnostics.globals": [
+        "YarkoCooldowns",
+        "YarkoCooldowns_OptionsPanel",
+        "YarkoCooldowns_FontDropDown",
+        "YarkoCooldowns_UpButton",
+        "YarkoCooldowns_DownButton"
+    ],
+    "workspace.ignoreDir": [
+        ".vscode",
+        "Interface (BlizzardInterfaceCode)"
+    ],
+    "telemetry.enable": false
+}
