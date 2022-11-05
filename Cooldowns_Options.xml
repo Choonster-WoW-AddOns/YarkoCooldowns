@@ -807,9 +807,9 @@
 		<Scripts>
 			<OnLoad>
 				self.name = YARKOCOOLDOWNS_TITLE;
-				self.default = YarkoCooldowns.OptionsDefault;
-				self.refresh = YarkoCooldowns.OptionsRefresh;
-				self.okay = YarkoCooldowns.OptionsOkay;
+				self.OnDefault = YarkoCooldowns.OptionsDefault;
+				self.OnRefresh = YarkoCooldowns.OptionsRefresh;
+				self.OnCommit = YarkoCooldowns.OptionsOkay;
 			</OnLoad>
 			<OnHide>
 				YarkoCooldowns_FontDropDown:Hide();
