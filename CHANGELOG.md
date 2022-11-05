@@ -1,3 +1,8 @@
+## 4.5
+- Ignore Faction Renown and Profession Specialization progress bars
+- Update to new Settings system
+- Bump TOC Interface version to 10.0.0
+
 ## 4.4.1
 - Fix incorrect variable name
 
