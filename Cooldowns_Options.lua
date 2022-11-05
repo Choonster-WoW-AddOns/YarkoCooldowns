@@ -89,9 +89,6 @@ function YarkoCooldowns.OptionsSetup()
 	-- Adjust dropdown field widths
 	UIDropDownMenu_SetWidth(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate, 67)
 	UIDropDownMenu_SetWidth(YarkoCooldowns_OptionsPanel.GeneralSettings.Outline, 60)
-	
-	-- Set first tab as selected by default
-	YarkoCooldowns.ConfigTabClick(1)
 end
 
 
@@ -511,29 +508,22 @@ function YarkoCooldowns.CopyColors(object)
 end
 
 
-local ConfigTabs = {
-	"GeneralSettings",
-	"Filtering",
-};
+---------------------------------------------------
+-- YarkoCooldowns.ClickTab
+---------------------------------------------------
+function YarkoCooldowns.ClickTab(tab)
+	YarkoCooldowns.SetTab(tab:GetID());	
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
+end
 
----------------------------------------------------
--- YarkoCooldowns.ConfigTabClick
----------------------------------------------------
-function YarkoCooldowns.ConfigTabClick(tabID)
-	for i, frame in ipairs(ConfigTabs) do
-		local tab = YarkoCooldowns_OptionsPanel["Tab" .. i];
-		if (i == tabID) then
-			tab.Left:SetAlpha(1.0);
-			tab.Middle:SetAlpha(1.0);
-			tab.Right:SetAlpha(1.0);
-			tab.Text:SetVertexColor(HIGHLIGHT_FONT_COLOR.r, HIGHLIGHT_FONT_COLOR.g, HIGHLIGHT_FONT_COLOR.b);
-			YarkoCooldowns_OptionsPanel[frame]:Show();
+function YarkoCooldowns.SetTab(tabID)
+	PanelTemplates_SetTab(YarkoCooldowns_OptionsPanel, tabID);
+
+	for i, frame in ipairs(YarkoCooldowns_OptionsPanel.ContentFrames) do
+		if i == tabID then
+			frame:Show();
 		else
-			tab.Left:SetAlpha(0.75);
-			tab.Middle:SetAlpha(0.75);
-			tab.Right:SetAlpha(0.75);
-			tab.Text:SetVertexColor(NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-			YarkoCooldowns_OptionsPanel[frame]:Hide();
+			frame:Hide();
 		end
 	end
 end
