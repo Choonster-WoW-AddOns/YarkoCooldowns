@@ -138,7 +138,7 @@ function YarkoCooldowns.OptionsRefresh()
 	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashSeconds:SetCursorPosition(0);
     UIDropDownMenu_Initialize(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate, YarkoCooldowns.AlternateDropDownInit);
 	UIDropDownMenu_SetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate, YarkoCooldowns_SavedVars.Alternate);
-	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColor.ColorSwatchNormalTexture:SetVertexColor(YarkoCooldowns_SavedVars.FlashColor.r, 
+	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColor.ColorSwatch.NormalTexture:SetVertexColor(YarkoCooldowns_SavedVars.FlashColor.r, 
 		YarkoCooldowns_SavedVars.FlashColor.g, YarkoCooldowns_SavedVars.FlashColor.b);
 	YarkoCooldowns_OptionsPanel.GeneralSettings.FontLocation:SetText(YarkoCooldowns_SavedVars.FontLocation);
 	YarkoCooldowns_OptionsPanel.GeneralSettings.FontLocation:SetCursorPosition(0);
@@ -175,13 +175,13 @@ end
 function YarkoCooldowns.OptionsOkay()
 	YarkoCooldowns_SavedVars.MainColor.r, YarkoCooldowns_SavedVars.MainColor.g, 
 		YarkoCooldowns_SavedVars.MainColor.b 
-		= YarkoCooldowns_OptionsPanel.GeneralSettings.MainColorColorSwatchNormalTexture:GetVertexColor();
+		= YarkoCooldowns_OptionsPanel.GeneralSettings.MainColor.ColorSwatch.NormalTexture:GetVertexColor();
 	YarkoCooldowns_SavedVars.Flash = ((YarkoCooldowns_OptionsPanel.GeneralSettings.Flash:GetChecked() and "Y") or "N");
 	YarkoCooldowns_SavedVars.FlashSeconds = YarkoCooldowns_OptionsPanel.GeneralSettings.FlashSeconds:GetNumber();
 	YarkoCooldowns_SavedVars.Alternate = UIDropDownMenu_GetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate);
 	YarkoCooldowns_SavedVars.FlashColor.r, YarkoCooldowns_SavedVars.FlashColor.g, 
 		YarkoCooldowns_SavedVars.FlashColor.b 
-		= YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColorColorSwatchNormalTexture:GetVertexColor();
+		= YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColor.ColorSwatch.NormalTexture:GetVertexColor();
 	YarkoCooldowns_SavedVars.FontLocation = YarkoCooldowns_OptionsPanel.GeneralSettings.FontLocation:GetText();
 	YarkoCooldowns_SavedVars.FontFile = YarkoCooldowns_OptionsPanel.GeneralSettings.FontFile:GetText();
 	YarkoCooldowns_SavedVars.FontHeightX = YarkoCooldowns_OptionsPanel.GeneralSettings.FontHeight:GetNumber();
@@ -366,7 +366,7 @@ function YarkoCooldowns.FontDropDownUpdate()
 	-- Adjust menu width
 	if (not MenuResized) then
 		for t = 1,  15 do
-			button = _G["YarkoCooldowns_FontDropDownButton"..t];
+			button = YarkoCooldowns_FontDropDown["Button" .. t];
 			button:SetWidth(maxwidth);
 		end
 		
@@ -586,7 +586,7 @@ function YarkoCooldowns.FilteringScrollUpdate()
 		if (index <= numEntries) then
 			parentName = SortedParentList[index];
 			button:SetText(parentName);
-			button.check:SetChecked(TempCopy[parentName] == "Y");
+			button.Check:SetChecked(TempCopy[parentName] == "Y");
 			
 			button:Show();
 		else

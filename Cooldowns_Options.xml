@@ -448,7 +448,7 @@
 					</EditBox>
 					<CheckButton parentKey="Shadow" inherits="InterfaceOptionsBaseCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeKey="$parent.FontHeightText" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.FontHeight.Text" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="-2" y="-36"/>
 								</Offset>
