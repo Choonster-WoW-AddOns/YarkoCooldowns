@@ -13,7 +13,7 @@
 		</Size>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentLeft" file="Interface\ChatFrame\ChatFrameTab">
+				<Texture parentKey="Left" file="Interface\ChatFrame\ChatFrameTab">
 					<Size>
 						<AbsDimension x="16" y="32"/>
 					</Size>
@@ -22,21 +22,21 @@
 					</Anchors>
 					<TexCoords left="0.0" right="0.25" top="0.0" bottom="1.0"/>
 				</Texture>
-				<Texture name="$parentMiddle" file="Interface\ChatFrame\ChatFrameTab">
+				<Texture parentKey="Middle" file="Interface\ChatFrame\ChatFrameTab">
 					<Size>
 						<AbsDimension x="44" y="32"/>
 					</Size>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT"/>
+						<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT"/>
 					</Anchors>
 					<TexCoords left="0.25" right="0.75" top="0.0" bottom="1.0"/>
 				</Texture>
-				<Texture name="$parentRight" file="Interface\ChatFrame\ChatFrameTab">
+				<Texture parentKey="Right" file="Interface\ChatFrame\ChatFrameTab">
 					<Size>
 						<AbsDimension x="16" y="32"/>
 					</Size>
 					<Anchors>
-						<Anchor point="LEFT" relativeTo="$parentMiddle" relativePoint="RIGHT"/>
+						<Anchor point="LEFT" relativeKey="$parent.Middle" relativePoint="RIGHT"/>
 					</Anchors>
 					<TexCoords left="0.75" right="1.0" top="0.0" bottom="1.0"/>
 				</Texture>
@@ -51,12 +51,12 @@
 				GameTooltip:Hide();
 			</OnLeave>
 		</Scripts>
-		<ButtonText name="$parentText" parentKey="text">
+		<ButtonText parentKey="Text">
 			<Size>
 				<AbsDimension x="0" y="8"/>
 			</Size>
 			<Anchors>
-				<Anchor point="LEFT" relativeTo="$parentLeft" relativePoint="RIGHT">
+				<Anchor point="LEFT" relativeKey="$parent.Left" relativePoint="RIGHT">
 					<Offset>
 						<AbsDimension x="0" y="-5"/>
 					</Offset>
@@ -66,12 +66,12 @@
 		<NormalFont style="GameFontNormalSmall"/>
 		<HighlightTexture file="Interface\PaperDollInfoFrame\UI-Character-Tab-Highlight" alphaMode="ADD">
 			<Anchors>
-				<Anchor point="LEFT" relativeTo="$parentLeft">
+				<Anchor point="LEFT" relativeKey="$parent.Left">
 					<Offset>
 						<AbsDimension x="0" y="-7"/>
 					</Offset>
 				</Anchor>
-				<Anchor point="RIGHT" relativeTo="$parentRight">
+				<Anchor point="RIGHT" relativeKey="$parent.Right">
 					<Offset>
 						<AbsDimension x="0" y="-7"/>
 					</Offset>
@@ -83,7 +83,7 @@
 	<Button name="YarkoCooldowns_FilteringScrollButtonTemplate" virtual="true">
 		<Size x="299" y="22"/>
 		<Frames>
-			<CheckButton name="$parentCheck" parentKey="check">
+			<CheckButton parentKey="Check">
 				<Size>
 					<AbsDimension x="26" y="26"/>
 				</Size>
@@ -119,7 +119,7 @@
 				--QuestLogTitleButton_OnLeave(self);
 			</OnLeave>
 		</Scripts>
-		<ButtonText name="$parentNormalText" nonspacewrap="true" parentKey="normalText">
+		<ButtonText parentKey="NormalText" nonspacewrap="true">
 			<Size x="0" y="10"/>
 			<Anchors>
 				<Anchor point="LEFT" x="20" y="1"/>
@@ -134,7 +134,7 @@
 	<Frame name="YarkoCooldowns_OptionsPanel" hidden="false">
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentTitle" text="YARKOCOOLDOWNS_TITLE" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
+				<FontString parentKey="Title" text="YARKOCOOLDOWNS_TITLE" inherits="GameFontNormalLarge" justifyH="LEFT" justifyV="TOP">
 					<Anchors>
 						<Anchor point="TOPLEFT">
 							<Offset>
@@ -146,9 +146,9 @@
 			</Layer>
 		</Layers>
 		<Frames>
-			<Button name="$parentTab1" inherits="YarkoCooldowns_ConfigTabTemplate" id="1">
+			<Button parentKey="Tab1" inherits="YarkoCooldowns_ConfigTabTemplate" id="1">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTitle" relativePoint="BOTTOMLEFT">
+					<Anchor point="TOPLEFT" relativeKey="$parent.Title" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="0"/>
 						</Offset>
@@ -161,9 +161,9 @@
 					</OnLoad>
 				</Scripts>
 			</Button>
-			<Button name="$parentTab2" inherits="YarkoCooldowns_ConfigTabTemplate" id="2">
+			<Button parentKey="Tab2" inherits="YarkoCooldowns_ConfigTabTemplate" id="2">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentTab1" relativePoint="TOPRIGHT">
+					<Anchor point="TOPLEFT" relativeKey="$parent.Tab1" relativePoint="TOPRIGHT">
 						<Offset>
 							<AbsDimension x="-1" y="0"/>
 						</Offset>
@@ -176,7 +176,7 @@
 					</OnLoad>
 				</Scripts>
 			</Button>
-			<Frame name="$parentInnerBorder" inherits="ChatConfigBoxTemplate">
+			<Frame parentKey="InnerBorder" inherits="ChatConfigBoxTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT">
 						<Offset x="12" y="-62"/>
@@ -186,17 +186,17 @@
 					</Anchor>
 				</Anchors>
 			</Frame>
-			<Frame name="$parentGeneralSettings">
+			<Frame name="$parentGeneralSettings" parentKey="GeneralSettings">
 				<Size>
 					<AbsDimension x="10" y="10"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentInnerBorder">
+					<Anchor point="TOPLEFT" relativeKey="$parent.InnerBorder">
 						<Offset x="0" y="0"/>
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<Frame name="$parentMainColor" inherits="YarkoCooldowns_SwatchTemplate">
+					<Frame name="$parentMainColor" parentKey="MainColor" inherits="YarkoCooldowns_SwatchTemplate">
 						<Anchors>
 							<Anchor point="TOPLEFT">
 								<Offset>
@@ -206,14 +206,14 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								_G[self:GetName().."Text"]:SetText(YARKOCOOLDOWNS_CONFIG_MAINCOLOR);
 								YarkoCooldowns.SwatchOnLoad(self);
+								self.Text:SetText(YARKOCOOLDOWNS_CONFIG_MAINCOLOR);
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<Frame name="$parentFlashColor" inherits="YarkoCooldowns_SwatchTemplate">
+					<Frame name="$parentFlashColor" parentKey="FlashColor" inherits="YarkoCooldowns_SwatchTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentMainColor" relativePoint="TOPLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.MainColor" relativePoint="TOPLEFT">
 								<Offset>
 									<AbsDimension x="298" y="0"/>
 								</Offset>
@@ -221,14 +221,14 @@
 						</Anchors>
 						<Scripts>
 							<OnLoad>
-								_G[self:GetName().."Text"]:SetText(YARKOCOOLDOWNS_CONFIG_FLASHCOLOR);
 								YarkoCooldowns.SwatchOnLoad(self);
+								self.Text:SetText(YARKOCOOLDOWNS_CONFIG_FLASHCOLOR);
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<CheckButton name="$parentFlash" inherits="InterfaceOptionsBaseCheckButtonTemplate">
+					<CheckButton parentKey="Flash" inherits="InterfaceOptionsBaseCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentMainColor" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.MainColor" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="-3" y="-14"/>
 								</Offset>
@@ -236,7 +236,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_FLASH" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_FLASH" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -248,12 +248,12 @@
 							</Layer>
 						</Layers>
 					</CheckButton>
-					<EditBox name="$parentFlashSeconds" letters="6" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="FlashSeconds" letters="6" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="64" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFlashText" relativePoint="TOPRIGHT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Flash.Text" relativePoint="TOPRIGHT">
 								<Offset>
 									<AbsDimension x="10" y="5"/>
 								</Offset>
@@ -261,7 +261,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_FLASH2" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_FLASH2" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -274,9 +274,9 @@
 						</Layers>
 						<FontString inherits="ChatFontNormal"/>
 					</EditBox>
-					<Frame name="$parentAlternate" inherits="UIDropDownMenuTemplate" enableMouse="true">
+					<Frame parentKey="Alternate" inherits="UIDropDownMenuTemplate" enableMouse="true">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFlash" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Flash" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="2" y="-20"/>
 								</Offset>
@@ -284,7 +284,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<FontString name="$parentLabel" inherits="GameFontHighlight" text="YARKOCOOLDOWNS_CONFIG_ALTERNATE">
+								<FontString parentKey="Label" inherits="GameFontHighlight" text="YARKOCOOLDOWNS_CONFIG_ALTERNATE">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -300,12 +300,12 @@
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<EditBox name="$parentFontLocation" letters="1024" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="FontLocation" letters="1024" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="407" y="16"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentAlternate" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Alternate" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="7" y="-28"/>
 								</Offset>
@@ -313,7 +313,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_FONTLOCATION" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_FONTLOCATION" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -335,12 +335,12 @@
 						</Scripts>
 						<FontString inherits="ChatFontNormal"/>
 					</EditBox>
-					<EditBox name="$parentFontFile" letters="128" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="FontFile" letters="128" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="170" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFontLocation" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.FontLocation" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-24"/>
 								</Offset>
@@ -348,7 +348,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_FONTFILE" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_FONTFILE" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -370,18 +370,18 @@
 						</Scripts>
 						<FontString inherits="ChatFontNormal"/>
 					</EditBox>
-					<Button name="$parentFontFileButton">
+					<Button parentKey="FontFileButton">
 						<Size>
 							<AbsDimension x="24" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFontFile" relativePoint="TOPRIGHT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.FontFile" relativePoint="TOPRIGHT">
 								<Offset>
 									<AbsDimension x="-4" y="0"/>
 								</Offset>
 							</Anchor>
 						</Anchors>
-						<NormalTexture name="$parentNormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
+						<NormalTexture parentKey="NormalTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Up">
 							<Size>
 								<AbsDimension x="24" y="24"/>
 							</Size>
@@ -389,7 +389,7 @@
 								<Anchor point="RIGHT"/>
 							</Anchors>
 						</NormalTexture>
-						<PushedTexture name="$parentPushedTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
+						<PushedTexture parentKey="PushedTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Down">
 							<Size>
 								<AbsDimension x="24" y="24"/>
 							</Size>
@@ -397,7 +397,7 @@
 								<Anchor point="RIGHT"/>
 							</Anchors>
 						</PushedTexture>
-						<DisabledTexture name="$parentDisabledTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
+						<DisabledTexture parentKey="DisabledTexture" file="Interface\ChatFrame\UI-ChatIcon-ScrollDown-Disabled">
 							<Size>
 								<AbsDimension x="24" y="24"/>
 							</Size>
@@ -405,7 +405,7 @@
 								<Anchor point="RIGHT"/>
 							</Anchors>
 						</DisabledTexture>
-						<HighlightTexture name="$parentHighlightTexture" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
+						<HighlightTexture parentKey="HighlightTexture" file="Interface\Buttons\UI-Common-MouseHilight" alphaMode="ADD">
 							<Size>
 								<AbsDimension x="24" y="24"/>
 							</Size>
@@ -420,12 +420,12 @@
 							</OnClick>
 						</Scripts>
 					</Button>
-					<EditBox name="$parentFontHeight" letters="2" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="FontHeight" letters="2" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="64" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFontFile" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.FontFile" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-20"/>
 								</Offset>
@@ -433,7 +433,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_FONTHEIGHT" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_FONTHEIGHT" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -446,9 +446,9 @@
 						</Layers>
 						<FontString inherits="ChatFontNormal"/>
 					</EditBox>
-					<CheckButton name="$parentShadow" inherits="InterfaceOptionsBaseCheckButtonTemplate">
+					<CheckButton parentKey="Shadow" inherits="InterfaceOptionsBaseCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentFontHeightText" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.FontHeightText" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="-2" y="-36"/>
 								</Offset>
@@ -456,7 +456,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_SHADOW" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_SHADOW" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -468,9 +468,9 @@
 							</Layer>
 						</Layers>
 					</CheckButton>
-					<Frame name="$parentOutline" inherits="UIDropDownMenuTemplate" enableMouse="true">
+					<Frame parentKey="Outline" inherits="UIDropDownMenuTemplate" enableMouse="true">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentShadow" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Shadow" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="2" y="-22"/>
 								</Offset>
@@ -478,7 +478,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="BACKGROUND">
-								<FontString name="$parentLabel" inherits="GameFontHighlight" text="YARKOCOOLDOWNS_CONFIG_OUTLINE">
+								<FontString parentKey="Label" inherits="GameFontHighlight" text="YARKOCOOLDOWNS_CONFIG_OUTLINE">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -494,9 +494,9 @@
 							</OnLoad>
 						</Scripts>
 					</Frame>
-					<CheckButton name="$parentTenths" inherits="InterfaceOptionsBaseCheckButtonTemplate">
+					<CheckButton parentKey="Tenths" inherits="InterfaceOptionsBaseCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentOutline" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Outline" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="-2" y="-7"/>
 								</Offset>
@@ -504,7 +504,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_TENTHS" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_TENTHS" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -516,9 +516,9 @@
 							</Layer>
 						</Layers>
 					</CheckButton>
-					<CheckButton name="$parentBelowTwo" inherits="InterfaceOptionsBaseCheckButtonTemplate">
+					<CheckButton parentKey="BelowTwo" inherits="InterfaceOptionsBaseCheckButtonTemplate">
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentTenths" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Tenths" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-4"/>
 								</Offset>
@@ -526,7 +526,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_BELOWTWO" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_BELOWTWO" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -538,12 +538,12 @@
 							</Layer>
 						</Layers>
 					</CheckButton>
-					<EditBox name="$parentSize" letters="6" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="Size" letters="6" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="64" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentShadow" relativePoint="TOPLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Shadow" relativePoint="TOPLEFT">
 								<Offset>
 									<AbsDimension x="307" y="0"/>
 								</Offset>
@@ -551,7 +551,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_SIZE" inherits="GameFontHighlight" wordwrap="true" justifyV="BOTTOM" justifyH="LEFT">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_SIZE" inherits="GameFontHighlight" wordwrap="true" justifyV="BOTTOM" justifyH="LEFT">
 									<Size>
 										<AbsDimension x="288" y="24"/>
 									</Size>
@@ -563,7 +563,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="$parentText2" text="YARKOCOOLDOWNS_CONFIG_SIZE2" inherits="GameFontHighlight">
+								<FontString parentKey="Text2" text="YARKOCOOLDOWNS_CONFIG_SIZE2" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -585,12 +585,12 @@
 							</OnLeave>
 						</Scripts>
 					</EditBox>
-					<EditBox name="$parentMinimum" letters="6" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="Minimum" letters="6" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="64" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentSize" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Size" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-30"/>
 								</Offset>
@@ -598,7 +598,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_MINIMUM" inherits="GameFontHighlight" wordwrap="true" justifyV="BOTTOM" justifyH="LEFT">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_MINIMUM" inherits="GameFontHighlight" wordwrap="true" justifyV="BOTTOM" justifyH="LEFT">
 									<Size>
 										<AbsDimension x="288" y="24"/>
 									</Size>
@@ -610,7 +610,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="$parentText2" text="YARKOCOOLDOWNS_CONFIG_MINIMUM2" inherits="GameFontHighlight">
+								<FontString parentKey="Text2" text="YARKOCOOLDOWNS_CONFIG_MINIMUM2" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -623,12 +623,12 @@
 						</Layers>
 						<FontString inherits="ChatFontNormal"/>
 					</EditBox>
-					<EditBox name="$parentSeconds" letters="6" autoFocus="false" inherits="InputBoxTemplate">
+					<EditBox parentKey="Seconds" letters="6" autoFocus="false" inherits="InputBoxTemplate">
 						<Size>
 							<AbsDimension x="64" y="24"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentMinimum" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.Minimum" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-20"/>
 								</Offset>
@@ -636,7 +636,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_SECONDS" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_SECONDS" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -645,7 +645,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="$parentText2" text="YARKOCOOLDOWNS_CONFIG_SECONDS2" inherits="GameFontHighlight">
+								<FontString parentKey="Text2" text="YARKOCOOLDOWNS_CONFIG_SECONDS2" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="LEFT" relativePoint="RIGHT">
 											<Offset>
@@ -665,17 +665,17 @@
 					</OnHide>
 				</Scripts>
 			</Frame>
-			<Frame name="$parentFiltering">
+			<Frame parentKey="Filtering">
 				<Size>
 					<AbsDimension x="10" y="10"/>
 				</Size>
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentInnerBorder">
+					<Anchor point="TOPLEFT" relativeKey="$parent.InnerBorder">
 						<Offset x="0" y="0"/>
 					</Anchor>
 				</Anchors>
 				<Frames>
-					<Frame name="$parentListBorder" inherits="ChatConfigBoxTemplate">
+					<Frame parentKey="ListBorder" inherits="ChatConfigBoxTemplate">
 						<Size>
 							<AbsDimension x="290" y="395"/>
 						</Size>
@@ -686,7 +686,7 @@
 						</Anchors>
 						<Layers>
 							<Layer level="ARTWORK">
-								<FontString name="$parentText" text="YARKOCOOLDOWNS_CONFIG_LIST" inherits="GameFontHighlight">
+								<FontString parentKey="Text" text="YARKOCOOLDOWNS_CONFIG_LIST" inherits="GameFontHighlight">
 									<Anchors>
 										<Anchor point="BOTTOMLEFT" relativePoint="TOPLEFT">
 											<Offset>
@@ -695,7 +695,7 @@
 										</Anchor>
 									</Anchors>
 								</FontString>
-								<FontString name="$parentHelp" text="YARKOCOOLDOWNS_CONFIG_LIST_INFO" inherits="GameFontHighlight" wordwrap="true" justifyV="TOP" justifyH="LEFT">
+								<FontString parentKey="Help" text="YARKOCOOLDOWNS_CONFIG_LIST_INFO" inherits="GameFontHighlight" wordwrap="true" justifyV="TOP" justifyH="LEFT">
 									<Size>
 										<AbsDimension x="270" y="300"/>
 									</Size>
@@ -709,31 +709,32 @@
 								</FontString>
 							</Layer>
 						</Layers>
-						<OnLoad>
-							self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b, 1);
-							self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b, 1);
-						</OnLoad>
+						<Scripts>
+							<OnLoad>
+								self:SetBackdropBorderColor(TOOLTIP_DEFAULT_COLOR.r, TOOLTIP_DEFAULT_COLOR.g, TOOLTIP_DEFAULT_COLOR.b, 1);
+								self:SetBackdropColor(TOOLTIP_DEFAULT_BACKGROUND_COLOR.r, TOOLTIP_DEFAULT_BACKGROUND_COLOR.g, TOOLTIP_DEFAULT_BACKGROUND_COLOR.b, 1);
+							</OnLoad>
+						</Scripts>
 					</Frame>
-					<ScrollFrame name="$parentScrollFrame" inherits="HybridScrollFrameTemplate">
+					<ScrollFrame parentKey="ScrollFrame" inherits="HybridScrollFrameTemplate">
 						<Size>
 							<AbsDimension x="252" y="375"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentListBorder" relativePoint="TOPLEFT" x="11" y="-10"/>
+							<Anchor point="TOPLEFT" relativeKey="$parent.ListBorder" relativePoint="TOPLEFT" x="11" y="-10"/>
 						</Anchors>
 						<Frames>
-							<Slider name="$parentScrollBar" inherits="HybridScrollBarTemplate" parentKey="scrollBar">
+							<Slider parentKey="ScrollBar" inherits="HybridScrollBarTemplate">
 								<Anchors>
 									<Anchor point="TOPLEFT" relativePoint="TOPRIGHT" x="0" y="-13"/>
 									<Anchor point="BOTTOMLEFT" relativePoint="BOTTOMRIGHT" x="0" y="14"/>
 								</Anchors>
 								<Scripts>
 									<OnLoad>
-										local name = self:GetName();
-										_G[name.."BG"]:Hide();
-										_G[name.."Top"]:Hide();
-										_G[name.."Bottom"]:Hide();
-										_G[name.."Middle"]:Hide();
+										self.trackBG:Hide();
+										self.ScrollBarTop:Hide();
+										self.ScrollBarBottom:Hide();
+										self.ScrollBarMiddle:Hide();
 										self.doNotHide = true;
 									</OnLoad>
 								</Scripts>
@@ -745,12 +746,12 @@
 							</OnLoad>
 						</Scripts>
 					</ScrollFrame>
-					<Button name="$parentRemove" inherits="UIPanelButtonTemplate" text="YARKOCOOLDOWNS_CONFIG_REMOVE">
+					<Button parentKey="Remove" inherits="UIPanelButtonTemplate" text="YARKOCOOLDOWNS_CONFIG_REMOVE">
 						<Size>
 							<AbsDimension x="140" y="22"/>
 						</Size>
 						<Anchors>
-							<Anchor point="TOPLEFT" relativeTo="$parentListBorder" relativePoint="BOTTOMLEFT">
+							<Anchor point="TOPLEFT" relativeKey="$parent.ListBorder" relativePoint="BOTTOMLEFT">
 								<Offset>
 									<AbsDimension x="0" y="-9"/>
 								</Offset>
@@ -770,12 +771,12 @@
 							</OnLeave>
 						</Scripts>
 					</Button>
-					<Button name="$parentUnselected" inherits="UIPanelButtonTemplate" text="YARKOCOOLDOWNS_CONFIG_UNSELECTED">
+					<Button parentKey="Unselected" inherits="UIPanelButtonTemplate" text="YARKOCOOLDOWNS_CONFIG_UNSELECTED">
 						<Size>
 							<AbsDimension x="140" y="22"/>
 						</Size>
 						<Anchors>
-							<Anchor point="LEFT" relativeTo="$parentRemove" relativePoint="RIGHT">
+							<Anchor point="LEFT" relativeKey="$parent.Remove" relativePoint="RIGHT">
 								<Offset>
 									<AbsDimension x="10" y="0"/>
 								</Offset>
@@ -832,10 +833,10 @@
 		<Size x="100" y="16"/>
 		<Layers>
 			<Layer level="BACKGROUND">
-				<Texture name="$parentHighlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
+				<Texture parentKey="Highlight" file="Interface\QuestFrame\UI-QuestTitleHighlight" alphaMode="ADD" setAllPoints="true" hidden="true"/>
 			</Layer>
 		</Layers>
-		<ButtonText name="$parentNormalText">
+		<ButtonText parentKey="NormalText">
 			<Anchors>
 				<Anchor point="LEFT">
 					<Offset x="3" y="0"/>
@@ -852,37 +853,27 @@
 			</OnClick>
 			<OnEnter>
 				YarkoCooldowns.StopCounting();
-				_G[self:GetName().."Highlight"]:Show();
+				self.Highlight:Show();
 			</OnEnter>
 			<OnLeave>
 				YarkoCooldowns.StartCounting();
-				_G[self:GetName().."Highlight"]:Hide();
+				self.Highlight:Hide();
 			</OnLeave>
 		</Scripts>
 	</Button>
 
-	<Frame name="YarkoCooldowns_FontDropDown" parent="YarkoCooldowns_OptionsPanelGeneralSettings" toplevel="true" frameStrata="FULLSCREEN_DIALOG" hidden="true">
+	<Frame name="YarkoCooldowns_FontDropDown" inherits="BackdropTemplate" parent="YarkoCooldowns_OptionsPanelGeneralSettings" toplevel="true" frameStrata="FULLSCREEN_DIALOG" hidden="true">
+		<KeyValues>
+			<KeyValue key="backdropInfo" value="BACKDROP_DIALOG_32_32" type="global" />
+		</KeyValues>
 		<Size>
 			<AbsDimension x="200" y="200"/>
 		</Size>
 		<Anchors>
-			<Anchor point="TOPRIGHT" relativeTo="$parentFontFileButton" relativePoint="BOTTOMRIGHT"/>
+			<Anchor point="TOPRIGHT" relativeKey="$parent.FontFileButton" relativePoint="BOTTOMRIGHT"/>
 		</Anchors>
 		<Frames>
-			<Frame name="$parentBackdrop" setAllPoints="true">
-				<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
-					<BackgroundInsets>
-						<AbsInset left="11" right="12" top="12" bottom="11"/>
-					</BackgroundInsets>
-					<TileSize>
-						<AbsValue val="32"/>
-					</TileSize>
-					<EdgeSize>
-						<AbsValue val="32"/>
-					</EdgeSize>
-				</Backdrop>
-			</Frame>
-			<Button name="$parentButton1" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button1" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="YarkoCooldowns_FontDropDown" relativePoint="TOPLEFT">
 						<Offset>
@@ -891,77 +882,77 @@
 					</Anchor>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton2" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button2" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton1" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button1" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton3" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button3" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton2" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button2" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton4" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button4" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton3" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button3" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton5" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button5" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton4" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button4" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton6" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button6" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton5" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button5" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton7" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button7" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton6" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button6" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton8" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button8" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton7" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button7" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton9" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button9" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton8" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button8" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton10" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button10" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton9" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button9" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton11" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button11" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton10" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button10" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton12" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button12" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton11" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button11" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton13" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button13" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton12" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button12" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton14" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button14" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton13" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button13" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<Button name="$parentButton15" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
+			<Button parentKey="Button15" inherits="YarkoCooldowns_FontDropDownButtonTemplate">
 				<Anchors>
-					<Anchor point="TOPLEFT" relativeTo="$parentButton14" relativePoint="BOTTOMLEFT"/>
+					<Anchor point="TOPLEFT" relativeKey="$parent.Button14" relativePoint="BOTTOMLEFT"/>
 				</Anchors>
 			</Button>
-			<ScrollFrame name="YarkoCooldowns_FontDropDownScrollFrame" inherits="FauxScrollFrameTemplate" hidden="true">
+			<ScrollFrame parentKey="ScrollFrame" inherits="FauxScrollFrameTemplate" hidden="true">
 				<Size>
 					<AbsDimension x="20" y="245"/>
 				</Size>
