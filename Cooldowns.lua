@@ -41,7 +41,22 @@ local SpecialAddon;
 
 local OutlineList = {nil, "OUTLINE", "THICKOUTLINE"};
 
-local ProcessedDefaultUIAddOns = {}
+local ProcessedDefaultUIAddOns = {
+	Blizzard_GarrisonUI = false,
+	Blizzard_MajorFactions = false,
+	Blizzard_Professions = false,
+	Blizzard_PVPUI = false,
+	Blizzard_UIWidgets = false,
+}
+
+local function CheckDefaultUIAddOn(addOnName)
+	if (IsAddOnLoaded(addOnName) and not ProcessedDefaultUIAddOns[addOnName]) then
+		ProcessedDefaultUIAddOns[addOnName] = true;
+		return true;
+	end
+
+	return false;
+end
 
 function YarkoCooldowns.Test()
 	c=0;
@@ -104,11 +119,9 @@ end
 
 
 function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
-	if (IsAddOnLoaded("Blizzard_GarrisonUI") and not ProcessedDefaultUIAddOns.Blizzard_GarrisonUI) then
+	if (CheckDefaultUIAddOn("Blizzard_GarrisonUI")) then
 		-- Ignore the follower experience bar for Covenant Mission rewards.
 		-- The follower frames are created on-demand from a frame pool, so we hook the mixin functions before the frames are created.
-
-		ProcessedDefaultUIAddOns.Blizzard_GarrisonUI = true;
 
 		local function AdventuresRewardsFollowerMixin_DisableCooldownCount(self)
 			self.noCooldownCount = true;
@@ -117,12 +130,33 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 		hooksecurefunc(AdventuresRewardsFollowerMixin, "SetFollowerInfo", AdventuresRewardsFollowerMixin_DisableCooldownCount);
 		hooksecurefunc(AdventuresRewardsFollowerMixin, "UpdateExperience", AdventuresRewardsFollowerMixin_DisableCooldownCount);
 	end
+
+	if (CheckDefaultUIAddOn("Blizzard_MajorFactions")) then
+		-- Ignore the Renown progress bars.
+		-- MajorFactionRenownFrame is created statically, so we apply the changes directly to the RenownProgressBar frame.
+		-- MajorFactionButtonTemplate buttons are created on-demand, so we hook the mixin function before the frames are created.
+
+		MajorFactionRenownFrame.HeaderFrame.RenownProgressBar.noCooldownCount = true;
+
+		local function MajorFactionButtonMixin_Init(self)
+			self.UnlockedState.RenownProgressBar.noCooldownCount = true;
+		end
+
+		hooksecurefunc(MajorFactionButtonMixin, "Init", MajorFactionButtonMixin_Init);
+	end
+
+	if (CheckDefaultUIAddOn("Blizzard_Professions")) then
+		-- Ignore the Professions Specialization progress bars.
+		-- ProfessionsFrame is created statically, so we apply the changes directly to the ProgressBar frame.
+
+		ProcessedDefaultUIAddOns.Blizzard_Professions = true;
+
+		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true;
+	end
 	
-	if (IsAddOnLoaded("Blizzard_PVPUI") and not ProcessedDefaultUIAddOns.Blizzard_PVPUI) then
+	if (CheckDefaultUIAddOn("Blizzard_PVPUI")) then
 		-- Ignore the Honor Level display.
 		-- PVPUIFrame is created statically, so we apply the changes directly to the HonorLevelDisplay frame.
-
-		ProcessedDefaultUIAddOns.Blizzard_PVPUI =  true;
 
 		PVPQueueFrame.HonorInset.CasualPanel.HonorLevelDisplay.noCooldownCount = true;
 	end
