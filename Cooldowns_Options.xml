@@ -44,7 +44,7 @@
 		</Layers>
 		<Scripts>
 			<OnClick>
-				PlaySound("UChatScrollButton");
+				PlaySound(SOUNDKIT.U_CHAT_SCROLL_BUTTON);
 				YarkoCooldowns.ConfigTabClick(self:GetID());
 			</OnClick>
 			<OnLeave>
@@ -96,7 +96,7 @@
 				</Anchors>
 				<Scripts>
 					<OnClick>
-						PlaySound("igMainMenuOptionCheckBoxOn");
+						PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 						YarkoCooldowns.FilteringButtonOnClick(self:GetParent());
 					</OnClick>
 				</Scripts>
@@ -109,7 +109,7 @@
 		</Frames>
 		<Scripts>
 			<OnClick>
-				PlaySound("igMainMenuOptionCheckBoxOn");
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 				YarkoCooldowns.FilteringButtonOnClick(self);
 			</OnClick>
 			<OnEnter>
@@ -416,7 +416,7 @@
 						<Scripts>
 							<OnClick>
 								YarkoCooldowns.ToggleFontDropDown();
-								PlaySound("igMainMenuOptionCheckBoxOn");
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 							</OnClick>
 						</Scripts>
 					</Button>
@@ -759,7 +759,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								PlaySound("igMainMenuOptionCheckBoxOn");
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 								YarkoCooldowns.RemoveOnClick(1);
 							</OnClick>
 							<OnEnter>
@@ -784,7 +784,7 @@
 						</Anchors>
 						<Scripts>
 							<OnClick>
-								PlaySound("igMainMenuOptionCheckBoxOn");
+								PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 								YarkoCooldowns.RemoveOnClick(2);
 							</OnClick>
 							<OnEnter>
@@ -849,7 +849,7 @@
 		<Scripts>
 			<OnClick>
 				YarkoCooldowns.FontDropDownButtonOnClick(self);
-				PlaySound("igMainMenuOptionCheckBoxOn");
+				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 			</OnClick>
 			<OnEnter>
 				YarkoCooldowns.StopCounting();

@@ -459,7 +459,7 @@ function YarkoCooldowns.SwatchOnLoad(self)
 	self.ColorSwatch.NormalTexture = _G[self.ColorSwatch:GetName() .. "NormalTexture"];
 	
 	swatch:SetScript("OnClick", function (self)
-		PlaySound("igMainMenuOptionCheckBoxOn");
+		PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON);
 		YarkoCooldowns.SwatchOnClick(self);
 	end);
 
