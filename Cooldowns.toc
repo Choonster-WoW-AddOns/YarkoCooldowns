@@ -1,4 +1,4 @@
-## Interface: 90002
+## Interface: 100000
 ## Title: Cooldowns @project-version@
 ## Version: @project-version@
 ## Notes: Display cooldown counters on action buttons
