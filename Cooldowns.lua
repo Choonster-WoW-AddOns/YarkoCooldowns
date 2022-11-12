@@ -75,7 +75,7 @@ function YarkoCooldowns.OnEvent(self, event, ...)
 	if (event == "ADDON_LOADED") then
 		local addOnName = ...;
 		
-		if (addOnName == "Blizzard_GarrisonUI" or addOnName == "Blizzard_PVPUI") then
+		if (ProcessedDefaultUIAddOns[addOnName] ~= nil) then
 			YarkoCooldowns.DisableCooldownsForDefaultUIElements();
 		end
 
@@ -148,8 +148,6 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 	if (CheckDefaultUIAddOn("Blizzard_Professions")) then
 		-- Ignore the Professions Specialization progress bars.
 		-- ProfessionsFrame is created statically, so we apply the changes directly to the ProgressBar frame.
-
-		ProcessedDefaultUIAddOns.Blizzard_Professions = true;
 
 		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true;
 	end
