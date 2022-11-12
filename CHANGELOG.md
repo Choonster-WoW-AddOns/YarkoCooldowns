@@ -1,3 +1,6 @@
+## 4.5.1
+- Fix some default UI AddOns not being ignored
+
 ## 4.5
 - Ignore Faction Renown and Profession Specialization progress bars
 - Update to new Settings system
