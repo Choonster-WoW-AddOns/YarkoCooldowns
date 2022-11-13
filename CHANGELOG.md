@@ -1,3 +1,6 @@
+## 4.5.2
+- Ignore Profession Trait Progress Bars
+
 ## 4.5.1
 - Fix some default UI AddOns not being ignored
 
