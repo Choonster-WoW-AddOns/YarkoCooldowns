@@ -147,9 +147,18 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 
 	if (CheckDefaultUIAddOn("Blizzard_Professions")) then
 		-- Ignore the Professions Specialization progress bars.
-		-- ProfessionsFrame is created statically, so we apply the changes directly to the ProgressBar frame.
+		-- ProfessionsFrame is created statically, so we apply the changes directly to the Path ProgressBar frame.
+		-- Profession Trait Buttons are created on-demand, so we listen to the TalentButtonAcquired callback.
 
 		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true;
+
+		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired, function(talentButton)
+			talentButton.ProgressBar.noCooldownCount = true;
+		end);
+
+		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased, function(talentButton)
+			talentButton.ProgressBar.noCooldownCount = nil;
+		end);
 	end
 	
 	if (CheckDefaultUIAddOn("Blizzard_PVPUI")) then
