@@ -1,13 +1,11 @@
-Cooldowns by Yarko
-------------------
+## Cooldowns by Yarko
 
 A World of Warcraft add-on that displays numeric cooldown counters on buttons and other icons with cooldowns.
 
 Configure colors, fonts, and other options through the Cooldowns interface options panel.
 
+## Using a different font in Cooldowns
 
-Using a different font in Cooldowns
------------------------------------
 1. If the font file you want to use is already located somewhere in the World of Warcraft subfolders, go to step 5. If you want to use a font file that does not already exist in the WoW file system, go to step 2.
 
 2. Shut down WoW. When copying a new file into the WoW subfolders, WoW must be restarted or the program won't see it.
