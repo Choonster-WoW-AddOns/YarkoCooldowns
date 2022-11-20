@@ -148,12 +148,12 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 
 		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true
 
-		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired, function(talentButton)
+		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired, function(_, talentButton)
 			print('YarkoCooldowns', 'Disabling for new Profession Spec Talent Button', talentButton:GetName() or talentButton)
 			talentButton.ProgressBar.noCooldownCount = true
 		end)
 
-		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased, function(talentButton)
+		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased, function(_, talentButton)
 			talentButton.ProgressBar.noCooldownCount = nil
 		end)
 
