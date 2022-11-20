@@ -149,12 +149,18 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIElements()
 		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true
 
 		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired, function(talentButton)
+			print('YarkoCooldowns', 'Disabling for new Profession Spec Talent Button', talentButton:GetName() or talentButton)
 			talentButton.ProgressBar.noCooldownCount = true
 		end)
 
 		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased, function(talentButton)
 			talentButton.ProgressBar.noCooldownCount = nil
 		end)
+
+		for talentButton in ProfessionsFrame.SpecPage:EnumerateAllTalentButtons() do
+			print('YarkoCooldowns', 'Disabling for existing Profession Spec Talent Button', talentButton:GetName() or talentButton)
+			talentButton.ProgressBar.noCooldownCount = true
+		end
 	end
 
 	if CheckDefaultUIAddOn("Blizzard_PVPUI") then
