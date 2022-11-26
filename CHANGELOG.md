@@ -1,3 +1,6 @@
+## 4.5.3
+- Fix Profession Trait Progress Bars not being ignored
+
 ## 4.5.2
 - Ignore Profession Trait Progress Bars
 
