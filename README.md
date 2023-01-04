@@ -21,3 +21,7 @@ Configure colors, fonts, and other options through the Cooldowns interface optio
 7. Enter the Font File Name. Again, upper and lower case don't matter. For the Recount font file that was mentioned in the last step, you would enter "abf.ttf" as the Font File Name.
 
 8. Set the font height. You might want to adjust this value to make some fonts more readable. Play around with it as needed.
+
+## WeakAuras Compatibility
+
+To disable the cooldown count for a WeakAuras icon aura, call `YarkoCooldowns.WeakAurasIcon_DisableCooldownCount(aura_env.region)` from the On Init action of the aura.

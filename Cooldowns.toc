@@ -4,6 +4,7 @@
 ## Notes: Display cooldown counters on action buttons
 ## SavedVariables: YarkoCooldowns_SavedVars
 ## Author: Yarko, Updates by Choonster
+## OptionalDeps: WeakAuras
 
 Localization.lua
 Localization.de.lua
@@ -11,3 +12,4 @@ Cooldowns.lua
 Cooldowns.xml
 Cooldowns_Options.lua
 Cooldowns_Options.xml
+Cooldowns_Compat.lua
