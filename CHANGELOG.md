@@ -1,3 +1,6 @@
+## 4.6
+- Allow disabling cooldown count for WeakAuras icons
+
 ## 4.5.3
 - Fix Profession Trait Progress Bars not being ignored
 
