@@ -10,4 +10,4 @@ $global:WOW_PACKAGER = wsl wslpath $(Resolve-Path '~\source\repos\packager\relea
 
 Import-Module '~\source\repos\PublishAddon\wow.psm1'
 
-Publish-Addon -retail
+Publish-Addon -retail -SkipTocCreation

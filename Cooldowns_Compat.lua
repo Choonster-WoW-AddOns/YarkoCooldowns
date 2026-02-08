@@ -8,7 +8,7 @@ local ProcessedAddOns = {
 }
 
 local function CheckAddOn(addOnName)
-	if IsAddOnLoaded(addOnName) and not ProcessedAddOns[addOnName] then
+	if C_AddOns.IsAddOnLoaded(addOnName) and not ProcessedAddOns[addOnName] then
 		ProcessedAddOns[addOnName] = true
 		return true
 	end
@@ -31,10 +31,10 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 
 	if CheckAddOn("Blizzard_MajorFactions") then
 		-- Ignore the Renown progress bars.
-		-- MajorFactionRenownFrame is created statically, so we apply the changes directly to the RenownProgressBar frame.
+		-- -- MajorFactionRenownFrame is created statically, so we apply the changes directly to the RenownProgressBar frame.
 		-- MajorFactionButtonTemplate buttons are created on-demand, so we hook the mixin function before the frames are created.
 
-		MajorFactionRenownFrame.HeaderFrame.RenownProgressBar.noCooldownCount = true
+		-- MajorFactionRenownFrame.HeaderFrame.RenownProgressBar.noCooldownCount = true
 
 		local function MajorFactionButtonMixin_Init(self)
 			self.UnlockedState.RenownProgressBar.noCooldownCount = true

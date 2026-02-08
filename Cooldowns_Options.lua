@@ -267,6 +267,8 @@ function YarkoCooldowns.UpdateCooldowns()
 	for _, value in pairs(YarkoCooldowns.CooldownFrames) do
 		YarkoCooldowns.UpdateFont(value)
 	end
+
+	YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 end
 
 ---------------------------------------------------
