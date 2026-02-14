@@ -153,7 +153,8 @@ function YarkoCooldowns.OptionsRefresh()
 	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashSeconds:SetText(YarkoCooldowns_SavedVars.FlashSeconds)
 	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashSeconds:SetCursorPosition(0)
 
-	UIDropDownMenu_Initialize(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate, YarkoCooldowns.AlternateDropDownInit)
+	UIDropDownMenu_Initialize(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate, YarkoCooldowns
+		.AlternateDropDownInit)
 
 	UIDropDownMenu_SetSelectedValue(
 		YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate,
@@ -175,7 +176,8 @@ function YarkoCooldowns.OptionsRefresh()
 	YarkoCooldowns_OptionsPanel.GeneralSettings.Shadow:SetChecked(YarkoCooldowns_SavedVars.Shadow == "Y")
 
 	UIDropDownMenu_Initialize(YarkoCooldowns_OptionsPanel.GeneralSettings.Outline, YarkoCooldowns.OutlineDropDownInit)
-	UIDropDownMenu_SetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Outline, YarkoCooldowns_SavedVars.Outline)
+	UIDropDownMenu_SetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Outline, YarkoCooldowns_SavedVars
+		.Outline)
 
 	YarkoCooldowns_OptionsPanel.GeneralSettings.Tenths:SetChecked(YarkoCooldowns_SavedVars.Tenths == "Y")
 	YarkoCooldowns_OptionsPanel.GeneralSettings.BelowTwo:SetChecked(YarkoCooldowns_SavedVars.BelowTwo == "Y")
@@ -201,24 +203,26 @@ end
 ---------------------------------------------------
 function YarkoCooldowns.OptionsOkay()
 	YarkoCooldowns_SavedVars.MainColor.r,
-		YarkoCooldowns_SavedVars.MainColor.g,
-		YarkoCooldowns_SavedVars.MainColor.b =
-	YarkoCooldowns_OptionsPanel.GeneralSettings.MainColor.ColorSwatch.NormalTexture:GetVertexColor()
+	YarkoCooldowns_SavedVars.MainColor.g,
+	YarkoCooldowns_SavedVars.MainColor.b =
+		YarkoCooldowns_OptionsPanel.GeneralSettings.MainColor.ColorSwatch.NormalTexture:GetVertexColor()
 
 	YarkoCooldowns_SavedVars.Flash = YarkoCooldowns_OptionsPanel.GeneralSettings.Flash:GetChecked() and "Y" or "N"
 	YarkoCooldowns_SavedVars.FlashSeconds = YarkoCooldowns_OptionsPanel.GeneralSettings.FlashSeconds:GetNumber()
-	YarkoCooldowns_SavedVars.Alternate = UIDropDownMenu_GetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Alternate)
+	YarkoCooldowns_SavedVars.Alternate = UIDropDownMenu_GetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings
+		.Alternate)
 
 	YarkoCooldowns_SavedVars.FlashColor.r,
-		YarkoCooldowns_SavedVars.FlashColor.g,
-		YarkoCooldowns_SavedVars.FlashColor.b =
-	YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColor.ColorSwatch.NormalTexture:GetVertexColor()
+	YarkoCooldowns_SavedVars.FlashColor.g,
+	YarkoCooldowns_SavedVars.FlashColor.b =
+		YarkoCooldowns_OptionsPanel.GeneralSettings.FlashColor.ColorSwatch.NormalTexture:GetVertexColor()
 
 	YarkoCooldowns_SavedVars.FontLocation = YarkoCooldowns_OptionsPanel.GeneralSettings.FontLocation:GetText()
 	YarkoCooldowns_SavedVars.FontFile = YarkoCooldowns_OptionsPanel.GeneralSettings.FontFile:GetText()
 	YarkoCooldowns_SavedVars.FontHeightX = YarkoCooldowns_OptionsPanel.GeneralSettings.FontHeight:GetNumber()
 	YarkoCooldowns_SavedVars.Shadow = YarkoCooldowns_OptionsPanel.GeneralSettings.Shadow:GetChecked() and "Y" or "N"
-	YarkoCooldowns_SavedVars.Outline = UIDropDownMenu_GetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings.Outline)
+	YarkoCooldowns_SavedVars.Outline = UIDropDownMenu_GetSelectedValue(YarkoCooldowns_OptionsPanel.GeneralSettings
+		.Outline)
 	YarkoCooldowns_SavedVars.Tenths = YarkoCooldowns_OptionsPanel.GeneralSettings.Tenths:GetChecked() and "Y" or "N"
 	YarkoCooldowns_SavedVars.BelowTwo = YarkoCooldowns_OptionsPanel.GeneralSettings.BelowTwo:GetChecked() and "Y" or "N"
 
@@ -496,17 +500,25 @@ function YarkoCooldowns.SwatchOnClick(self)
 	local info = {}
 	info.extraInfo = self.NormalTexture
 	info.r, info.g, info.b = info.extraInfo:GetVertexColor()
+	
 	info.swatchFunc = YarkoCooldowns.SetColor
-	OpenColorPicker(info)
+	info.cancelFunc = YarkoCooldowns.CancelColor
+
+	ColorPickerFrame:SetupColorPickerAndShow(info)
 end
 
 ---------------------------------------------------
 -- YarkoCooldowns.SetColor
 ---------------------------------------------------
 function YarkoCooldowns.SetColor()
-	if not ColorPickerFrame:IsVisible() then
-		ColorPickerFrame.extraInfo:SetVertexColor(ColorPickerFrame:GetColorRGB())
-	end
+	ColorPickerFrame.extraInfo:SetVertexColor(ColorPickerFrame:GetColorRGB())
+end
+
+---------------------------------------------------
+-- YarkoCooldowns.CancelColor
+---------------------------------------------------
+function YarkoCooldowns.CancelColor(previousValues)
+	ColorPickerFrame.extraInfo:SetVertexColor(previousValues.r, previousValues.g, previousValues.b)
 end
 
 ---------------------------------------------------
@@ -596,7 +608,8 @@ function YarkoCooldowns.FilteringScrollUpdate()
 		displayedHeight = displayedHeight + buttonHeight
 	end
 
-	HybridScrollFrame_Update(YarkoCooldowns_OptionsPanel.Filtering.ScrollFrame, numEntries * buttonHeight, displayedHeight)
+	HybridScrollFrame_Update(YarkoCooldowns_OptionsPanel.Filtering.ScrollFrame, numEntries * buttonHeight,
+		displayedHeight)
 end
 
 ---------------------------------------------------
