@@ -65,7 +65,8 @@ local OutlineList = { nil, "OUTLINE", "THICKOUTLINE" }
 
 ---@type NumberAbbrevOptions
 local CooldownAbbreviateOptions = {
-	config = CreateAbbreviateConfig({})
+	-- CreateAbbreviateConfig only seems to support breakpoints that are powers of 10 (despite the error message saying multiples of 10), so use a plain table instead
+	breakpointData = {} 
 }
 
 function YarkoCooldowns.Test()
@@ -129,7 +130,7 @@ function YarkoCooldowns.OnEvent(_, event, ...)
 end
 
 function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
-	---@type NumberAbbrevData
+	---@type NumberAbbreviationBreakpoint
 	local hourConfig = YarkoCooldowns_SavedVars.Tenths == "Y" and {
 		breakpoint = 3600,
 		abbreviation = "h",
@@ -144,7 +145,7 @@ function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 		abbreviationIsGlobal = false,
 	}
 
-	---@type NumberAbbrevData
+	---@type NumberAbbreviationBreakpoint
 	local minuteConfig = YarkoCooldowns_SavedVars.Tenths == "Y" and {
 		breakpoint = 60,
 		abbreviation = "m",
@@ -159,7 +160,7 @@ function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 		abbreviationIsGlobal = false,
 	}
 
-	---@type NumberAbbrevData
+	---@type NumberAbbreviationBreakpoint
 	local secondConfig = {
 		breakpoint = 2,
 		abbreviation = "",
@@ -168,7 +169,7 @@ function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 		abbreviationIsGlobal = false,
 	}
 
-	---@type NumberAbbrevData
+	---@type NumberAbbreviationBreakpoint
 	local belowTwoConfig = YarkoCooldowns_SavedVars.BelowTwo == "Y" and {
 		breakpoint = 0,
 		abbreviation = "",
@@ -183,15 +184,11 @@ function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 		abbreviationIsGlobal = false,
 	}
 
-	CooldownAbbreviateOptions.config:SetAbbreviateNumberData({
-		hourConfig,
-		minuteConfig,
-		secondConfig,
-		belowTwoConfig
-	})
-
-	-- print("YarkoCooldowns.UpdateCooldownAbbreviateOptions")
-	-- DevTools_Dump(CooldownAbbreviateOptions.config:GetAbbreviateNumberData())
+	local breakpointData = CooldownAbbreviateOptions.breakpointData
+	breakpointData[1] = hourConfig
+	breakpointData[2] = minuteConfig
+	breakpointData[3] = secondConfig
+	breakpointData[4] = belowTwoConfig
 end
 
 --- Get the cooldown for an action button as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
