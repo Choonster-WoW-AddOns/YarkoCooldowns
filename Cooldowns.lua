@@ -440,12 +440,12 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 							-- 	length = 4
 							-- end
 
-							-- frame:SetScale(
-							-- 	Scales[length] * parent:GetWidth() / ActionButton1:GetWidth()
-							-- 	* (frame.bt4Frame and parent:GetEffectiveScale() or 1)
-							-- 	* (#line2 > 0 and length == 2 and 0.8 or 1)
-							-- 	* (timeLeft <= 2 and YarkoCooldowns_SavedVars.BelowTwo == "Y" and 0.95 or 1)
-							-- )
+							frame:SetScale(
+								Scales[2 --[[ length ]]] * parent:GetWidth() / ActionButton1:GetWidth()
+								* (frame.bt4Frame and parent:GetEffectiveScale() or 1)
+								* (0.8 --[[ #line2 > 0 and length == 2 and 0.8 or 1 ]])
+								-- [[ * (timeLeft <= 2 and YarkoCooldowns_SavedVars.BelowTwo == "Y" and 0.95 or 1) ]]
+							)
 
 							-- counterText1:ClearAllPoints()
 
