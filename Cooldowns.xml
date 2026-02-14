@@ -21,7 +21,7 @@
 		</Size>
 		<Layers>
 			<Layer level="ARTWORK">
-				<FontString name="$parentText1" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="text1">
+				<FontString name="$parentTextMain" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="textMain">
 					<Anchors>
 						<Anchor point="CENTER">
 							<Offset>
@@ -30,11 +30,11 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="$parentText2" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="text2">
+				<FontString name="$parentTextAlternate" inherits="SystemFont_OutlineThick_Huge4" hidden="false" justifyH="CENTER" parentKey="textAlternate" alpha="0">
 					<Anchors>
-						<Anchor point="TOP" relativeTo="$parentText1" relativePoint="BOTTOM">
+						<Anchor point="CENTER">
 							<Offset>
-								<AbsDimension x="0" y="3"/>
+								<AbsDimension x="0" y="0"/>
 							</Offset>
 						</Anchor>
 					</Anchors>

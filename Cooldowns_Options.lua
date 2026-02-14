@@ -269,6 +269,7 @@ function YarkoCooldowns.UpdateCooldowns()
 	end
 
 	YarkoCooldowns.UpdateCooldownAbbreviateOptions()
+	YarkoCooldowns.CacheOptions()
 end
 
 ---------------------------------------------------

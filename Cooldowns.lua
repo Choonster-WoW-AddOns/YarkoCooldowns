@@ -12,8 +12,8 @@ YarkoCooldowns = {}
 --- @field filtername string
 --- @field flag boolean
 --- @field oldflag boolean
---- @field text1 FontString
---- @field text2 FontString
+--- @field textMain FontString
+--- @field textAlternate FontString
 
 --- @class Cooldown
 --- @field GetParent fun(): Frame -- Assume that Cooldown objects always have a parent
@@ -52,6 +52,12 @@ local TimeSinceLastFlash = 0
 local FlashInterval = .3
 local FlashFlag = false
 
+local UseAlternateColorBelowThreshold = false
+local FlashBelowThreshold = false
+
+--- @type ColorRGBData, ColorRGBData
+local MainColor, AlternateColor
+
 local Scales = {
 	[1] = 1,
 	[2] = .85,
@@ -66,8 +72,14 @@ local OutlineList = { nil, "OUTLINE", "THICKOUTLINE" }
 ---@type NumberAbbrevOptions
 local CooldownAbbreviateOptions = {
 	-- CreateAbbreviateConfig only seems to support breakpoints that are powers of 10 (despite the error message saying multiples of 10), so use a plain table instead
-	breakpointData = {} 
+	breakpointData = {}
 }
+
+local MainTextAlphaCurve = C_CurveUtil.CreateCurve()
+MainTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
+
+local AlternateTextAlphaCurve = C_CurveUtil.CreateCurve()
+AlternateTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
 
 function YarkoCooldowns.Test()
 	for k, v in pairs(ActiveCounters) do
@@ -103,6 +115,7 @@ function YarkoCooldowns.OnEvent(_, event, ...)
 		YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 
 		YarkoCooldowns.UpdateCooldownAbbreviateOptions()
+		YarkoCooldowns.CacheOptions()
 
 		return
 	end
@@ -189,6 +202,30 @@ function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
 	breakpointData[2] = minuteConfig
 	breakpointData[3] = secondConfig
 	breakpointData[4] = belowTwoConfig
+end
+
+function YarkoCooldowns.CacheOptions()
+	UseAlternateColorBelowThreshold = YarkoCooldowns_SavedVars.Flash == "Y"
+	FlashBelowThreshold = UseAlternateColorBelowThreshold and YarkoCooldowns_SavedVars.Alternate == 1
+
+	MainColor = YarkoCooldowns_SavedVars.MainColor
+	AlternateColor = YarkoCooldowns_SavedVars.FlashColor
+
+	if UseAlternateColorBelowThreshold then
+		-- When the remaining duration is <= FlashSeconds, hide the main text and show the alternate text
+		MainTextAlphaCurve:SetPoints({
+			{ x = 0,                                              y = 0 },
+			{ x = YarkoCooldowns_SavedVars.FlashSeconds + 0.0001, y = 1 }
+		})
+
+		AlternateTextAlphaCurve:SetPoints({
+			{ x = 0,                                              y = 1 },
+			{ x = YarkoCooldowns_SavedVars.FlashSeconds + 0.0001, y = 0 }
+		})
+	else
+		MainTextAlphaCurve:ClearPoints()
+		AlternateTextAlphaCurve:ClearPoints()
+	end
 end
 
 --- Get the cooldown for an action button as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
@@ -331,8 +368,8 @@ function YarkoCooldowns.ClearCooldown(self)
 	-- print("YarkoCooldowns.ClearCooldown", self:GetName(), ActiveCounters[self])
 	if ActiveCounters[self] then
 		ActiveCounters[self].duration = nil
-		ActiveCounters[self].text1:SetText("")
-		ActiveCounters[self].text2:SetText("")
+		ActiveCounters[self].textMain:SetText("")
+		ActiveCounters[self].textAlternate:SetText("")
 		ActiveCounters[self] = nil
 	end
 end
@@ -353,8 +390,8 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 				-- May be secret
 				local timeLeft = frame.duration:GetRemainingDuration()
 
-				local counterText1 = frame.text1
-				local counterText2 = frame.text2
+				local counterTextMain = frame.textMain
+				local counterTextAlternate = frame.textAlternate
 
 				if --[[ timeLeft > 0 and frame.enable > 0]] true then
 					local parent = cooldown:GetParent()
@@ -370,10 +407,8 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 						and cooldown:IsVisible() and parent:GetEffectiveAlpha() > 0
 						and (not parentframe or YarkoCooldowns_SavedVars.ParentFrames[parentframe] ~= "N")
 					then
-						local line1, line2, length
-
 						-- May be secret
-						line1 = AbbreviateNumbers(timeLeft, CooldownAbbreviateOptions)
+						local text = AbbreviateNumbers(timeLeft, CooldownAbbreviateOptions)
 
 						-- if timeLeft > 3600 then
 						-- 	line1 = YarkoCooldowns_SavedVars.Tenths == "Y"
@@ -417,12 +452,14 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 							-- local x = length == 4 and 4 or 2
 
 							if --[[ #line2 < 1 ]] true then
-								counterText1:SetPoint("CENTER", frame, "CENTER", --[[ x ]] 2, -3)
+								counterTextMain:SetPoint("CENTER", frame, "CENTER", --[[ x ]] 2, -3)
+								counterTextAlternate:SetPoint("CENTER", frame, "CENTER", --[[ x ]] 2, -3)
 							else
 								-- counterText1:SetPoint("BOTTOM", frame, "TOP", x, -23)
 							end
 
-							counterText1:SetText(line1)
+							counterTextMain:SetText(text)
+							counterTextAlternate:SetText(text)
 							-- counterText2:SetText(line2)
 						end
 
@@ -447,13 +484,30 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 						-- 	YarkoCooldowns.SetCounterColor(counterText2, frame.flag)
 						-- 	frame.oldflag = frame.flag
 						-- end
+
+						if UseAlternateColorBelowThreshold then
+							local mainAlpha = frame.duration:EvaluateRemainingDuration(MainTextAlphaCurve)
+							local alternateAlpha = frame.duration:EvaluateRemainingDuration(AlternateTextAlphaCurve)
+
+							counterTextMain:SetAlpha(mainAlpha)
+							counterTextAlternate:SetAlpha(alternateAlpha)
+
+							if FlashBelowThreshold then
+								YarkoCooldowns.SetCounterColor(counterTextAlternate, FlashFlag)
+							else
+								YarkoCooldowns.SetCounterColor(counterTextAlternate, true)
+							end
+						else
+							counterTextMain:SetAlpha(1)
+							counterTextAlternate:SetAlpha(0)
+						end
 					else
-						counterText1:SetText("")
-						counterText2:SetText("")
+						counterTextMain:SetText("")
+						counterTextAlternate:SetText("")
 					end
 				else
-					counterText1:SetText("")
-					counterText2:SetText("")
+					counterTextMain:SetText("")
+					counterTextAlternate:SetText("")
 					ActiveCounters[cooldown] = nil
 				end
 			end
@@ -489,46 +543,48 @@ end
 -- 	return outStr
 -- end
 
+---
+--- @param cooldownFrame YarkoCooldownsCounter
 function YarkoCooldowns.UpdateFont(cooldownFrame)
-	local counterText1 = cooldownFrame.text1
-	local counterText2 = cooldownFrame.text2
+	local counterTextMain = cooldownFrame.textMain
+	local counterTextAlternate = cooldownFrame.textAlternate
 
 	if YarkoCooldowns_SavedVars.Shadow == "Y" then
-		counterText1:SetShadowOffset(1, -1)
-		counterText2:SetShadowOffset(1, -1)
+		counterTextMain:SetShadowOffset(1, -1)
+		counterTextAlternate:SetShadowOffset(1, -1)
 	else
-		counterText1:SetShadowOffset(0, 0)
-		counterText2:SetShadowOffset(0, 0)
+		counterTextMain:SetShadowOffset(0, 0)
+		counterTextAlternate:SetShadowOffset(0, 0)
 	end
 
-	counterText1:SetFont(
+	counterTextMain:SetFont(
 		YarkoCooldowns_SavedVars.FontLocation .. "\\" .. YarkoCooldowns_SavedVars.FontFile,
 		YarkoCooldowns_SavedVars.FontHeightX,
 		OutlineList[YarkoCooldowns_SavedVars.Outline]
 	)
 
-	counterText2:SetFont(
+	counterTextAlternate:SetFont(
 		YarkoCooldowns_SavedVars.FontLocation .. "\\" .. YarkoCooldowns_SavedVars.FontFile,
 		YarkoCooldowns_SavedVars.FontHeightX,
 		OutlineList[YarkoCooldowns_SavedVars.Outline]
 	)
 
-	YarkoCooldowns.SetCounterColor(counterText1, cooldownFrame.flag or false)
-	YarkoCooldowns.SetCounterColor(counterText2, cooldownFrame.flag or false)
+	YarkoCooldowns.SetCounterColor(counterTextMain, false)
+	YarkoCooldowns.SetCounterColor(counterTextAlternate, false)
 end
 
-function YarkoCooldowns.SetCounterColor(counterText, flag)
-	if not flag then
+function YarkoCooldowns.SetCounterColor(counterText, useAlternate)
+	if not useAlternate then
 		counterText:SetTextColor(
-			YarkoCooldowns_SavedVars.MainColor.r,
-			YarkoCooldowns_SavedVars.MainColor.g,
-			YarkoCooldowns_SavedVars.MainColor.b
+			MainColor.r,
+			MainColor.g,
+			MainColor.b
 		)
 	else
 		counterText:SetTextColor(
-			YarkoCooldowns_SavedVars.FlashColor.r,
-			YarkoCooldowns_SavedVars.FlashColor.g,
-			YarkoCooldowns_SavedVars.FlashColor.b
+			AlternateColor.r,
+			AlternateColor.g,
+			AlternateColor.b
 		)
 	end
 end
