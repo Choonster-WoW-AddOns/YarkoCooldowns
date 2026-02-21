@@ -14,6 +14,9 @@ YarkoCooldowns = {}
 --- @field oldflag boolean
 --- @field textMain FontString
 --- @field textAlternate FontString
+--- @field displayedPassiveCooldownSpellIDWarning boolean?
+--- @field displayedParentWidthWarning boolean?
+--- @field displayedParentAlphaWarning boolean?
 
 --- @class Cooldown
 --- @field GetParent fun(): Frame -- Assume that Cooldown objects always have a parent
@@ -80,6 +83,57 @@ MainTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
 
 local AlternateTextAlphaCurve = C_CurveUtil.CreateCurve()
 AlternateTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
+
+--@alpha@
+local DEBUG = true
+
+local function debugprint(...)
+	if DEBUG then
+		print("YarkoCooldowns:", ...)
+	end
+end
+
+---
+---@param frame Frame?
+---@return Frame?
+local function GetClosestNamedAncestorFrame(frame)
+	---@type Frame?
+	local ancestorFrame = frame
+	repeat
+		ancestorFrame = ancestorFrame and ancestorFrame:GetParent()
+	until not ancestorFrame or ancestorFrame:GetName()
+
+	return ancestorFrame
+end
+
+---
+---@param t table
+---@return string
+local function DumpTable(t)
+	local values = {}
+
+	for k, v in pairs(t) do
+		local valueType = type(v)
+		local valueString
+		if not canaccessvalue(v) then
+			valueString = ("<secret> <%s>"):format(valueType)
+		elseif valueType == "string" then
+			valueString = ("%q"):format(v)
+		elseif valueType == "number" or valueType == "boolean" or valueType == "nil" then
+			valueString = tostring(v)
+		else
+			valueString = ("<%s>"):format(valueType)
+		end
+
+		table.insert(values, ("%s=%s"):format(tostring(k), valueString))
+	end
+
+	local valuesString = "{" .. table.concat(values, ",") .. "}"
+
+	return valuesString
+end
+
+--@end-alpha@
 
 function YarkoCooldowns.Test()
 	for k, v in pairs(ActiveCounters) do
@@ -230,8 +284,9 @@ end
 
 --- Get the cooldown for an action button as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
 --- @param self ActionButton
+--- @param frame YarkoCooldownsCounter
 --- @return LuaDurationObject?
-function YarkoCooldowns.GetCooldownDuration(self)
+function YarkoCooldowns.GetCooldownDuration(self, frame)
 	local actionType, actionID
 
 	if self.action then
@@ -255,7 +310,23 @@ function YarkoCooldowns.GetCooldownDuration(self)
 		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(self.spellID)
 	end
 
-	if passiveCooldownSpellID and passiveCooldownSpellID ~= 0 then
+	if not canaccessvalue(passiveCooldownSpellID) then
+		if not frame.displayedPassiveCooldownSpellIDWarning then
+			frame.displayedPassiveCooldownSpellIDWarning = true
+
+			--@alpha@
+			debugprint(
+				"GetCooldownDuration", "passiveCooldownSpellID is secret, ignoring passive cooldown",
+				"self:", self:GetName() or "<no name>",
+				"passiveCooldownSpellID:", passiveCooldownSpellID,
+				"self.action:", self.action, "(secret =", issecretvalue(self.action), ")",
+				"self.spellID", self.spellID, "(secret =", issecretvalue(self.spellID), ")",
+				"actionType:", actionType, "actionID", actionID,
+				"onEquipPassiveSpellID:", onEquipPassiveSpellID
+			)
+			--@end-alpha@
+		end
+	elseif passiveCooldownSpellID and passiveCooldownSpellID ~= 0 then
 		auraData = C_UnitAuras.GetPlayerAuraBySpellID(passiveCooldownSpellID);
 	end
 
@@ -287,7 +358,10 @@ end
 ---@param duration number
 ---@param modRate number?
 function YarkoCooldowns.SetCooldown(self, start, duration, modRate)
-	-- print("YarkoCooldowns.SetCooldown", self:GetName(), start, duration, modRate)
+	--@alpha@
+	-- debugprint("YarkoCooldowns.SetCooldown", self:GetName(), start, duration, modRate)
+	--@end-alpha@
+
 	if not self.noCooldownCount --[[and start > 0]] then
 		YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, (duration > 0 and duration < 1 and 0) or 1]])
 	end
@@ -299,7 +373,9 @@ end
 ---@param duration number
 ---@param modRate number?
 function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enable ]])
-	-- print("YarkoCooldowns.StartCooldown", self:GetName(), start, duration, modRate)
+	--@alpha@
+	-- debugprint("YarkoCooldowns.StartCooldown", self:GetName(), start, duration, modRate)
+	--@end-alpha@
 
 	local parent = self:GetParent() --[[@as Frame | ActionButton]]
 
@@ -329,7 +405,23 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 			frame = CreateFrame("Frame", name, not bt4Frame and self or nil, "YarkoCooldowns_CounterTemplate") --[[@as YarkoCooldownsCounter]]
 			frame:SetPoint("CENTER", parent, "CENTER")
 
-			print("Created frame", name or "<no name>", "for", parentName or parent)
+			--@alpha@
+			debugprint("Created frame", name or "<no name>", "for", parentName or parent)
+
+			if not parentName then
+				---@type Frame?
+				local ancestorFrame = GetClosestNamedAncestorFrame(parent)
+				local valuesString = DumpTable(parent)
+
+				debugprint(
+					"Anonymous parent details",
+					"Closest named ancestor frame:", ancestorFrame and ancestorFrame:GetName() or "<none>",
+					"action:", parent.action, "(secret = ", issecretvalue(parent.action), ")",
+					"spellID:", parent.spellID, "(secret = ", issecretvalue(parent.spellID), ")",
+					"Values:", valuesString
+				)
+			end
+			--@end-alpha@
 
 			if bt4Frame then
 				frame:SetFrameStrata(parent:GetFrameStrata())
@@ -350,7 +442,7 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 			YarkoCooldowns.CooldownFrames[self] = frame
 		end
 
-		frame.duration = YarkoCooldowns.GetCooldownDuration(parent)
+		frame.duration = YarkoCooldowns.GetCooldownDuration(parent, frame)
 		-- frame.start = start
 		-- frame.duration = duration
 		-- frame.enable = enable
@@ -401,12 +493,35 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 						YarkoCooldowns_SavedVars.ParentFrames[parentframe] = "Y"
 					end
 
-					if YarkoCooldowns.Round(parent:GetWidth()) * parent:GetEffectiveScale() / UIParent:GetScale() >=
-						YarkoCooldowns_SavedVars.Size
+					local parentWidth = parent:GetWidth()
+					local parentAlpha = parent:GetEffectiveAlpha()
+
+					if (not canaccessvalue(parentWidth) -- If the parent button's width is secret, ignore the size check
+							or YarkoCooldowns.Round(parentWidth) * parent:GetEffectiveScale() / UIParent:GetScale() >= YarkoCooldowns_SavedVars.Size)
 						and not cooldown.noCooldownCount
-						and cooldown:IsVisible() and parent:GetEffectiveAlpha() > 0
+						and cooldown:IsVisible() and (not canaccessvalue(parentAlpha) or parentAlpha > 0) -- If the parent button's alpha is secret, ignore the alpha check
 						and (not parentframe or YarkoCooldowns_SavedVars.ParentFrames[parentframe] ~= "N")
 					then
+						--@alpha@
+						if not frame.displayedParentWidthWarning and not canaccessvalue(parentWidth) then
+							frame.displayedParentWidthWarning = true
+
+							debugprint(
+								"OnUpdate", "Parent width is secret",
+								"name:", frame:GetName() or "<no name>", "parentWidth:", parentWidth
+							)
+						end
+
+						if not frame.displayedParentAlphaWarning and not canaccessvalue(parentAlpha) then
+							frame.displayedParentAlphaWarning = true
+
+							debugprint(
+								"OnUpdate", "Parent alpha is secret",
+								"name:", frame:GetName() or "<no name>", "parentAlpha:", parentAlpha
+							)
+						end
+						--@end-alpha@
+
 						-- May be secret
 						local text = AbbreviateNumbers(timeLeft, CooldownAbbreviateOptions)
 
@@ -441,10 +556,10 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 							-- end
 
 							frame:SetScale(
-								Scales[2 --[[ length ]]] * parent:GetWidth() / ActionButton1:GetWidth()
+								Scales[ 2 --[[ length ]] ] * parent:GetWidth() / ActionButton1:GetWidth()
 								* (frame.bt4Frame and parent:GetEffectiveScale() or 1)
 								* (0.8 --[[ #line2 > 0 and length == 2 and 0.8 or 1 ]])
-								-- [[ * (timeLeft <= 2 and YarkoCooldowns_SavedVars.BelowTwo == "Y" and 0.95 or 1) ]]
+							-- [[ * (timeLeft <= 2 and YarkoCooldowns_SavedVars.BelowTwo == "Y" and 0.95 or 1) ]]
 							)
 
 							-- counterText1:ClearAllPoints()
