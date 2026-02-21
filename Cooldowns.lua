@@ -22,7 +22,7 @@ YarkoCooldowns = {}
 --- @field GetParent fun(): Frame -- Assume that Cooldown objects always have a parent
 --- @field noCooldownCount boolean?
 
---- @class ActionButton : CheckButton
+--- @class CooldownParentFrame : Frame
 --- @field action number?
 --- @field spellID number?
 
@@ -282,8 +282,8 @@ function YarkoCooldowns.CacheOptions()
 	end
 end
 
---- Get the cooldown for an action button as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
---- @param self ActionButton
+--- Get the cooldown for an action button or similar frame as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
+--- @param self CooldownParentFrame
 --- @param frame YarkoCooldownsCounter
 --- @return LuaDurationObject?
 function YarkoCooldowns.GetCooldownDuration(self, frame)
@@ -377,7 +377,7 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 	-- debugprint("YarkoCooldowns.StartCooldown", self:GetName(), start, duration, modRate)
 	--@end-alpha@
 
-	local parent = self:GetParent() --[[@as Frame | ActionButton]]
+	local parent = self:GetParent() --[[@as Frame | CooldownParentFrame]]
 
 	if parent.action or parent.spellID
 	-- (
@@ -388,7 +388,7 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 	-- 		)
 	-- 	)
 	then
-		---@cast parent ActionButton
+		---@cast parent CooldownParentFrame
 
 		local frame = YarkoCooldowns.CooldownFrames[self]
 
