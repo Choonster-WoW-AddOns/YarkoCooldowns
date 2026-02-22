@@ -37,6 +37,14 @@ jobs:
       # once cloned, we just run the GitHub Action for the packager project
       - name: Package and release
         uses: BigWigsMods/packager@master
+            
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          # Artifact name
+          name: Cooldowns
+          # A file, directory or wildcard pattern that describes what to upload
+          path: Cooldowns-*.zip
 
       # another example where we supply additional arguments, this example is specifically to release
       # for the Classic version of the game
