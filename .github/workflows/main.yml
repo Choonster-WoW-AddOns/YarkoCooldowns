@@ -35,7 +35,7 @@ jobs:
       - name: Package and release
         uses: BigWigsMods/packager@master
 
-      - run: ls -a
+      - run: ls -aR
 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v6
