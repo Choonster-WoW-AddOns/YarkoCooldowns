@@ -1,5 +1,6 @@
 YarkoCooldowns = {}
 
+--@debug@
 --- @class LuaDurationObject : ScriptObject
 --- @field SetTimeFromStart fun(self: LuaDurationObject, startTime: number, duration: number, modRate?: number)
 --- @field GetRemainingDuration fun(self: LuaDurationObject, modifier?: Enum.DurationTimeModifier): number
@@ -25,6 +26,19 @@ YarkoCooldowns = {}
 --- @class CooldownParentFrame : Frame
 --- @field action number?
 --- @field spellID number?
+
+--- @alias LuaValueReference any
+
+if false then
+	--- DebugLog API
+	DLAPI = {
+		---
+		---@param addonName string
+		---@param ... string
+		DebugLog = function(addonName, ...) end
+	}
+end
+--@end-debug@
 
 YarkoCooldowns.DefaultMainColor = NORMAL_FONT_COLOR
 YarkoCooldowns.DefaultFlash = "Y"
@@ -84,26 +98,10 @@ MainTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
 local AlternateTextAlphaCurve = C_CurveUtil.CreateCurve()
 AlternateTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
 
---@alpha@
-local DEBUG = true
-
-local function debugprint(...)
-	if DEBUG then
-		print("YarkoCooldowns:", ...)
+local function debugLog(...)
+	if DLAPI then
+		DLAPI.DebugLog("YarkoCooldowns", tostringall(...))
 	end
-end
-
----
----@param frame Frame?
----@return Frame?
-local function GetClosestNamedAncestorFrame(frame)
-	---@type Frame?
-	local ancestorFrame = frame
-	repeat
-		ancestorFrame = ancestorFrame and ancestorFrame:GetParent()
-	until not ancestorFrame or ancestorFrame:GetName()
-
-	return ancestorFrame
 end
 
 ---
@@ -314,17 +312,15 @@ function YarkoCooldowns.GetCooldownDuration(self, frame)
 		if not frame.displayedPassiveCooldownSpellIDWarning then
 			frame.displayedPassiveCooldownSpellIDWarning = true
 
-			--@alpha@
-			debugprint(
-				"GetCooldownDuration", "passiveCooldownSpellID is secret, ignoring passive cooldown",
-				"self:", self:GetName() or "<no name>",
-				"passiveCooldownSpellID:", passiveCooldownSpellID,
-				"self.action:", self.action, "(secret =", issecretvalue(self.action), ")",
-				"self.spellID", self.spellID, "(secret =", issecretvalue(self.spellID), ")",
-				"actionType:", actionType, "actionID", actionID,
-				"onEquipPassiveSpellID:", onEquipPassiveSpellID
+			debugLog(
+				"GetCooldownDuration - passiveCooldownSpellID is secret, ignoring passive cooldown - "
+				.. "self: %s, passiveCooldownSpellID: %s, self.action: %s (secret = %s), self.spellID: %s (secret = %s), "
+				.. "actionType: %s, actionID: %s, onEquipPassiveSpellID: %s",
+				self:GetName() or self, passiveCooldownSpellID,
+				self.action, issecretvalue(self.action),
+				self.spellID, issecretvalue(self.spellID),
+				actionType, actionID, onEquipPassiveSpellID
 			)
-			--@end-alpha@
 		end
 	elseif passiveCooldownSpellID and passiveCooldownSpellID ~= 0 then
 		auraData = C_UnitAuras.GetPlayerAuraBySpellID(passiveCooldownSpellID);
@@ -406,19 +402,18 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 			frame:SetPoint("CENTER", parent, "CENTER")
 
 			--@alpha@
-			debugprint("Created frame", name or "<no name>", "for", parentName or parent)
+			debugLog("Created frame %s for %s", name or "<no name>", parentName or tostring(parent))
 
 			if not parentName then
-				---@type Frame?
-				local ancestorFrame = GetClosestNamedAncestorFrame(parent)
+				local ancestorName = YarkoCooldowns.GetParentFrame(parent)
 				local valuesString = DumpTable(parent)
 
-				debugprint(
-					"Anonymous parent details",
-					"Closest named ancestor frame:", ancestorFrame and ancestorFrame:GetName() or "<none>",
-					"action:", parent.action, "(secret = ", issecretvalue(parent.action), ")",
-					"spellID:", parent.spellID, "(secret = ", issecretvalue(parent.spellID), ")",
-					"Values:", valuesString
+				debugLog(
+					"Anonymous parent details - Closest named ancestor frame: %s, action: %s (secret = %s), spellID: %s (secret = %s), Values: %s",
+					ancestorName or "<none>",
+					parent.action, issecretvalue(parent.action),
+					parent.spellID, issecretvalue(parent.spellID),
+					valuesString
 				)
 			end
 			--@end-alpha@
@@ -507,18 +502,18 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 						if not frame.displayedParentWidthWarning and not canaccessvalue(parentWidth) then
 							frame.displayedParentWidthWarning = true
 
-							debugprint(
-								"OnUpdate", "Parent width is secret",
-								"name:", frame:GetName() or "<no name>", "parentWidth:", parentWidth
+							debugLog(
+								"OnUpdate - Parent width is secret - name: %s, parentWidth: %s",
+								frame:GetName() or "<no name>", parentWidth
 							)
 						end
 
 						if not frame.displayedParentAlphaWarning and not canaccessvalue(parentAlpha) then
 							frame.displayedParentAlphaWarning = true
 
-							debugprint(
-								"OnUpdate", "Parent alpha is secret",
-								"name:", frame:GetName() or "<no name>", "parentAlpha:", parentAlpha
+							debugLog(
+								"OnUpdate - Parent alpha is secret - name: %s, parentAlpha: %s",
+								frame:GetName() or "<no name>", parentAlpha
 							)
 						end
 						--@end-alpha@
