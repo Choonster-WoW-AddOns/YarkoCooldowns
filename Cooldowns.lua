@@ -429,8 +429,9 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 
 			frame:SetFrameLevel(self:GetFrameLevel() + 5)
 
-			self:HookScript("OnShow", function(self) YarkoCooldowns.CooldownFrames[self]:Show() end)
-			self:HookScript("OnHide", function(self) YarkoCooldowns.CooldownFrames[self]:Hide() end)
+			self:HookScript("OnShow", function(_) YarkoCooldowns.CooldownFrames[self]:Show() end)
+			self:HookScript("OnHide", function(_) YarkoCooldowns.CooldownFrames[self]:Hide() end)
+			self:HookScript("OnCooldownDone", function(_) YarkoCooldowns.ClearCooldown(self) end)
 
 			YarkoCooldowns.UpdateFont(frame)
 			frame:Show()
