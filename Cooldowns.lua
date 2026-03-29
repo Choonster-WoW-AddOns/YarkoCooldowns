@@ -1,11 +1,6 @@
 YarkoCooldowns = {}
 
 --@debug@
---- @class LuaDurationObject : ScriptObject
---- @field SetTimeFromStart fun(self: LuaDurationObject, startTime: number, duration: number, modRate?: number)
---- @field GetRemainingDuration fun(self: LuaDurationObject, modifier?: Enum.DurationTimeModifier): number
---- @field Reset fun(self: LuaDurationObject)
-
 --- @class YarkoCooldownsCounter : Frame
 --- @field duration LuaDurationObject?
 --- @field cooldown Cooldown
@@ -26,8 +21,8 @@ YarkoCooldowns = {}
 --- @class CooldownParentFrame : Frame
 --- @field action number?
 --- @field spellID number?
-
---- @alias LuaValueReference any
+--- @field chargeCooldown? Cooldown
+--- @field lossOfControlCooldown? Cooldown
 
 if false then
 	--- DebugLog API
@@ -142,7 +137,7 @@ end
 function YarkoCooldowns.OnLoad(self)
 	self:RegisterEvent("ADDON_LOADED")
 	self:RegisterEvent("PLAYER_LOGIN")
-	self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
+	-- self:RegisterEvent("ACTIONBAR_UPDATE_COOLDOWN")
 end
 
 function YarkoCooldowns.OnEvent(_, event, ...)
@@ -157,12 +152,13 @@ function YarkoCooldowns.OnEvent(_, event, ...)
 
 		YarkoCooldowns.OptionsSetup()
 
-		-- Does not work with addons that call SetCooldown() directly
-		--hooksecurefunc("CooldownFrame_SetTimer", YarkoCooldowns.CooldownSetTimer)
-
-		-- So hook directly to the cooldown widget function
-		hooksecurefunc(getmetatable(ActionButton1.cooldown).__index, "SetCooldown", YarkoCooldowns.SetCooldown)
-		hooksecurefunc(getmetatable(ActionButton1.cooldown).__index, "Clear", YarkoCooldowns.ClearCooldown)
+		local cooldownMethods = getmetatable(ActionButton1.cooldown).__index
+		hooksecurefunc(cooldownMethods, "SetCooldown", YarkoCooldowns.SetCooldown)
+		hooksecurefunc(cooldownMethods, "SetCooldownDuration", YarkoCooldowns.SetCooldown)
+		hooksecurefunc(cooldownMethods, "SetCooldownFromDurationObject", YarkoCooldowns.SetCooldown)
+		hooksecurefunc(cooldownMethods, "SetCooldownFromExpirationTime", YarkoCooldowns.SetCooldown)
+		hooksecurefunc(cooldownMethods, "SetCooldownUNIX", YarkoCooldowns.SetCooldown)
+		hooksecurefunc(cooldownMethods, "Clear", YarkoCooldowns.ClearCooldown)
 
 		YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 
@@ -283,55 +279,11 @@ end
 --- Get the cooldown for an action button or similar frame as a Duration object, or nil if it's on GCD. Based on ActionButton_UpdateCooldown.
 --- @param self CooldownParentFrame
 --- @param frame YarkoCooldownsCounter
---- @return LuaDurationObject?
+--- @return DurationObject? duration
 function YarkoCooldowns.GetCooldownDuration(self, frame)
-	local actionType, actionID
-
-	if self.action then
-		actionType, actionID = GetActionInfo(self.action)
-	end
-
-	local auraData
-	local passiveCooldownSpellID
-	local onEquipPassiveSpellID
-
-	if actionID then
-		onEquipPassiveSpellID = C_ActionBar.GetItemActionOnEquipSpellID(self.action)
-	end
-
-	if onEquipPassiveSpellID then
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(onEquipPassiveSpellID)
-	elseif actionType == "spell" and actionID then
-		---@cast actionID number
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(actionID)
-	elseif self.spellID then
-		passiveCooldownSpellID = C_UnitAuras.GetCooldownAuraBySpellID(self.spellID)
-	end
-
-	if not canaccessvalue(passiveCooldownSpellID) then
-		if not frame.displayedPassiveCooldownSpellIDWarning then
-			frame.displayedPassiveCooldownSpellIDWarning = true
-
-			debugLog(
-				"GetCooldownDuration - passiveCooldownSpellID is secret, ignoring passive cooldown - "
-				.. "self: %s, passiveCooldownSpellID: %s, self.action: %s (secret = %s), self.spellID: %s (secret = %s), "
-				.. "actionType: %s, actionID: %s, onEquipPassiveSpellID: %s",
-				self:GetName() or self, passiveCooldownSpellID,
-				self.action, issecretvalue(self.action),
-				self.spellID, issecretvalue(self.spellID),
-				actionType, actionID, onEquipPassiveSpellID
-			)
-		end
-	elseif passiveCooldownSpellID and passiveCooldownSpellID ~= 0 then
-		auraData = C_UnitAuras.GetPlayerAuraBySpellID(passiveCooldownSpellID);
-	end
-
-	if auraData then
-		local duration = C_UnitAuras.GetAuraDuration("player", auraData.auraInstanceID)
-		return duration
-	elseif self.spellID then
+	if self.spellID then
 		local cooldownInfo = C_Spell.GetSpellCooldown(self.spellID)
-		if cooldownInfo.isOnGCD then
+		if cooldownInfo.isOnGCD or not cooldownInfo.isActive then
 			return nil
 		end
 
@@ -339,7 +291,7 @@ function YarkoCooldowns.GetCooldownDuration(self, frame)
 		return duration
 	else
 		local cooldownInfo = C_ActionBar.GetActionCooldown(self.action)
-		if cooldownInfo.isOnGCD then
+		if cooldownInfo.isOnGCD or not cooldownInfo.isActive then
 			return nil
 		end
 
@@ -350,30 +302,29 @@ end
 
 ---
 ---@param self Cooldown
----@param start number
----@param duration number
----@param modRate number?
-function YarkoCooldowns.SetCooldown(self, start, duration, modRate)
+function YarkoCooldowns.SetCooldown(self --[[, start, duration, modRate]])
 	--@alpha@
 	-- debugprint("YarkoCooldowns.SetCooldown", self:GetName(), start, duration, modRate)
 	--@end-alpha@
 
 	if not self.noCooldownCount --[[and start > 0]] then
-		YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, (duration > 0 and duration < 1 and 0) or 1]])
+		YarkoCooldowns.StartCooldown(self --[[, start, duration, modRate, (duration > 0 and duration < 1 and 0) or 1]])
 	end
 end
 
 ---
 ---@param self Cooldown
----@param start number
----@param duration number
----@param modRate number?
-function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enable ]])
+function YarkoCooldowns.StartCooldown(self --[[, start, duration, modRate, enable ]])
 	--@alpha@
 	-- debugprint("YarkoCooldowns.StartCooldown", self:GetName(), start, duration, modRate)
 	--@end-alpha@
 
 	local parent = self:GetParent() --[[@as Frame | CooldownParentFrame]]
+
+	-- Ignore charge and loss of control cooldowns
+	if self == parent.chargeCooldown or self == parent.lossOfControlCooldown then
+		return
+	end
 
 	if parent.action or parent.spellID
 	-- (
@@ -445,8 +396,6 @@ function YarkoCooldowns.StartCooldown(self, start, duration, modRate --[[, enabl
 		frame.flag = false
 
 		ActiveCounters[self] = frame
-	else
-
 	end
 end
 
@@ -613,12 +562,12 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 							counterTextAlternate:SetAlpha(0)
 						end
 					else
-						counterTextMain:SetText("")
-						counterTextAlternate:SetText("")
+						counterTextMain:ClearText()
+						counterTextAlternate:ClearText()
 					end
 				else
-					counterTextMain:SetText("")
-					counterTextAlternate:SetText("")
+					counterTextMain:ClearText()
+					counterTextAlternate:ClearText()
 					ActiveCounters[cooldown] = nil
 				end
 			end
