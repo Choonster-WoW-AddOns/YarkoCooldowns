@@ -19,14 +19,26 @@ end
 function YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 	if CheckAddOn("Blizzard_GarrisonUI") then
 		-- Ignore the follower experience bar for Covenant Mission rewards.
+		-- Delay until the next frame to allow AdventuresRewardsFollowerMixin to be created
 		-- The follower frames are created on-demand from a frame pool, so we hook the mixin functions before the frames are created.
 
-		local function AdventuresRewardsFollowerMixin_DisableCooldownCount(self)
-			self.noCooldownCount = true
-		end
+		C_Timer.After(0, function()
+			local function AdventuresRewardsFollowerMixin_DisableCooldownCount(self)
+				self.noCooldownCount = true
+			end
 
-		hooksecurefunc(AdventuresRewardsFollowerMixin, "SetFollowerInfo", AdventuresRewardsFollowerMixin_DisableCooldownCount)
-		hooksecurefunc(AdventuresRewardsFollowerMixin, "UpdateExperience", AdventuresRewardsFollowerMixin_DisableCooldownCount)
+			hooksecurefunc(
+				AdventuresRewardsFollowerMixin,
+				"SetFollowerInfo",
+				AdventuresRewardsFollowerMixin_DisableCooldownCount
+			)
+
+			hooksecurefunc(
+				AdventuresRewardsFollowerMixin,
+				"UpdateExperience",
+				AdventuresRewardsFollowerMixin_DisableCooldownCount
+			)
+		end)
 	end
 
 	if CheckAddOn("Blizzard_MajorFactions") then
@@ -45,24 +57,27 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 
 	if CheckAddOn("Blizzard_Professions") then
 		-- Ignore the Professions Specialization progress bars.
+		-- Delay until the next frame to allow ProfessionsFrame to be created
 		-- ProfessionsFrame is created statically, so we apply the changes directly to the Path ProgressBar frame.
 		-- Profession Trait Buttons are created on-demand, so we listen to the TalentButtonAcquired callback.
 
-		ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true
+		C_Timer.After(0, function()
+			ProfessionsFrame.SpecPage.DetailedView.Path.ProgressBar.noCooldownCount = true
 
-		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired,
-			function(_, talentButton)
+			ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonAcquired,
+				function(_, talentButton)
+					talentButton.ProgressBar.noCooldownCount = true
+				end)
+
+			ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased,
+				function(_, talentButton)
+					talentButton.ProgressBar.noCooldownCount = nil
+				end)
+
+			for talentButton in ProfessionsFrame.SpecPage:EnumerateAllTalentButtons() do
 				talentButton.ProgressBar.noCooldownCount = true
-			end)
-
-		ProfessionsFrame.SpecPage:RegisterCallback(TalentFrameBaseMixin.Event.TalentButtonReleased,
-			function(_, talentButton)
-				talentButton.ProgressBar.noCooldownCount = nil
-			end)
-
-		for talentButton in ProfessionsFrame.SpecPage:EnumerateAllTalentButtons() do
-			talentButton.ProgressBar.noCooldownCount = true
-		end
+			end
+		end)
 	end
 
 	if CheckAddOn("Blizzard_PVPUI") then
@@ -88,8 +103,17 @@ function YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 			self.Progress.noCooldownCount = true
 		end
 
-		hooksecurefunc(UIWidgetBaseCircularStatusBarTemplateMixin, "Setup", UIWidgetBaseCircularStatusBar_DisableCooldownCount)
-		hooksecurefunc(UIWidgetBaseControlZoneTemplateMixin, "Setup", UIWidgetBaseControlZone_DisableCooldownCount)
+		hooksecurefunc(
+			UIWidgetBaseCircularStatusBarTemplateMixin,
+			"Setup",
+			UIWidgetBaseCircularStatusBar_DisableCooldownCount
+		)
+
+		hooksecurefunc(
+			UIWidgetBaseControlZoneTemplateMixin,
+			"Setup",
+			UIWidgetBaseControlZone_DisableCooldownCount
+		)
 	end
 
 	if CheckAddOn("WeakAuras") then

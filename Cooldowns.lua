@@ -283,7 +283,7 @@ end
 function YarkoCooldowns.GetCooldownDuration(self, frame)
 	if self.spellID then
 		local cooldownInfo = C_Spell.GetSpellCooldown(self.spellID)
-		if cooldownInfo.isOnGCD or not cooldownInfo.isActive then
+		if not cooldownInfo or cooldownInfo.isOnGCD or not cooldownInfo.isActive then
 			return nil
 		end
 
@@ -291,7 +291,7 @@ function YarkoCooldowns.GetCooldownDuration(self, frame)
 		return duration
 	else
 		local cooldownInfo = C_ActionBar.GetActionCooldown(self.action)
-		if cooldownInfo.isOnGCD or not cooldownInfo.isActive then
+		if not cooldownInfo or cooldownInfo.isOnGCD or not cooldownInfo.isActive then
 			return nil
 		end
 
