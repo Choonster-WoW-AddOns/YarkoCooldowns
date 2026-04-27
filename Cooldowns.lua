@@ -24,7 +24,37 @@ YarkoCooldowns = {}
 --- @field chargeCooldown? Cooldown
 --- @field lossOfControlCooldown? Cooldown
 
+-- TODO: Remove these definitions when the WoW API extension is updated for 12.0.5
+
+--- @class LuaDurationObject
+--- @field FormatRemainingDuration fun(self: LuaDurationObject, formatter: NumericRuleFormatter): string
+
+--- @class NumericRuleFormatBreakpoint
+--- @field threshold	number	Minimum input value that this rule applies to.
+--- @field step	number?	If specified, the input value is rounded to multiples of this step before processing.
+--- @field rounding	Enum.NumericRuleFormatRounding?	Default: Nearest. If specified, the rounding mode to apply to the step.
+--- @field min	number?	If specified, clamps the input value to this value if lesser after rounding.
+--- @field max	number?	If specified, clamps the input value to this value if greater after rounding.
+--- @field format	string	The format string to apply at this threshold. If no components are specified, this can include at-most one numeric format specifier - else, should contain an equal number of format specifiers to elements in the components array.
+--- @field components	NumericRuleFormatComponent[]?	Vector of component descriptions for this rule.
+
+--- @class NumericRuleFormatComponent
+--- @field div	number?	If specified, divide the value by this amount and use the resulting quotient. This is applied before modulo division.
+--- @field mod	number?	If specified, divide the value by this amount and use the resulting remainder. This is applied after quotient division.
+--- @field step	number?	If specified, round the value to multiples of this step. This is applied after all division.
+--- @field rounding	Enum.NumericRuleFormatRounding?	Default: Nearest. If specified, rounding mode to apply to the step.
+
+--- @class NumericRuleFormatter
+--- @field SetBreakpoints fun(self: NumericRuleFormatter, breakpoints: NumericRuleFormatBreakpoint[])
+
 if false then
+	--- @enum Enum.NumericRuleFormatRounding
+	Enum.NumericRuleFormatRounding = {
+		Nearest = 0,
+		Up = 1,
+		Down = 2,
+	}
+
 	--- DebugLog API
 	DLAPI = {
 		---
@@ -81,11 +111,8 @@ local SpecialAddon
 
 local OutlineList = { nil, "OUTLINE", "THICKOUTLINE" }
 
----@type NumberAbbrevOptions
-local CooldownAbbreviateOptions = {
-	-- CreateAbbreviateConfig only seems to support breakpoints that are powers of 10 (despite the error message saying multiples of 10), so use a plain table instead
-	breakpointData = {}
-}
+---@type NumericRuleFormatter
+local CooldownFormatter = C_StringUtil.CreateNumericRuleFormatter()
 
 local MainTextAlphaCurve = C_CurveUtil.CreateCurve()
 MainTextAlphaCurve:SetType(Enum.LuaCurveType.Step)
@@ -162,7 +189,7 @@ function YarkoCooldowns.OnEvent(_, event, ...)
 
 		YarkoCooldowns.DisableCooldownsForDefaultUIAndAddOns()
 
-		YarkoCooldowns.UpdateCooldownAbbreviateOptions()
+		YarkoCooldowns.UpdateCooldownFormatterOptions()
 		YarkoCooldowns.CacheOptions()
 
 		return
@@ -190,66 +217,76 @@ function YarkoCooldowns.OnEvent(_, event, ...)
 	-- end
 end
 
-function YarkoCooldowns.UpdateCooldownAbbreviateOptions()
-	---@type NumberAbbreviationBreakpoint
-	local hourConfig = YarkoCooldowns_SavedVars.Tenths == "Y" and {
-		breakpoint = 3600,
-		abbreviation = "h",
-		significandDivisor = 360,
-		fractionDivisor = 10,
-		abbreviationIsGlobal = false,
-	} or {
-		breakpoint = 3600,
-		abbreviation = "h",
-		significandDivisor = 3600,
-		fractionDivisor = 1,
-		abbreviationIsGlobal = false,
-	}
+function YarkoCooldowns.UpdateCooldownFormatterOptions()
+	local hourBreakpoint = YarkoCooldowns_SavedVars.Tenths == "Y" and {
+		threshold = 3600,
+		format = "%.1fh",
+		components = {
+			{
+				div = 360,
+				step = 0.1,
+			},
+		},
+	} --[[@as NumericRuleFormatBreakpoint]] or {
+		threshold = 3600,
+		format = "%dh",
+		components = {
+			{
+				div = 3600,
+				step = 1,
+				rounding = Enum.NumericRuleFormatRounding.Up,
+			}
+		},
+	} --[[@as NumericRuleFormatBreakpoint]]
 
-	---@type NumberAbbreviationBreakpoint
-	local minuteConfig = YarkoCooldowns_SavedVars.Tenths == "Y" and {
-		breakpoint = 60,
-		abbreviation = "m",
-		significandDivisor = 6,
-		fractionDivisor = 10,
-		abbreviationIsGlobal = false,
-	} or {
-		breakpoint = 60,
-		abbreviation = "m",
-		significandDivisor = 60,
-		fractionDivisor = 1,
-		abbreviationIsGlobal = false,
-	}
+	local minuteBreakpoint = YarkoCooldowns_SavedVars.Tenths == "Y" and {
+		threshold = 60,
+		format = "%.1fm",
+		components = {
+			{
+				div = 60,
+				step = 0.1,
+			},
+		},
+	} --[[@as NumericRuleFormatBreakpoint]] or {
+		threshold = 60,
+		format = "%dm",
+		components = {
+			{
+				div = 60,
+				step = 1,
+				rounding = Enum.NumericRuleFormatRounding.Up,
+			}
+		},
+	} --[[@as NumericRuleFormatBreakpoint]]
 
-	---@type NumberAbbreviationBreakpoint
-	local secondConfig = {
-		breakpoint = 2,
-		abbreviation = "",
-		significandDivisor = 1,
-		fractionDivisor = 1,
-		abbreviationIsGlobal = false,
-	}
+	local secondBreakpoint = {
+		threshold = 2,
+		format = "%d",
+		components = {
+			{
+				step = 1,
+				rounding = Enum.NumericRuleFormatRounding.Up,
+			},
+		},
+	} --[[@as NumericRuleFormatBreakpoint]]
 
-	---@type NumberAbbreviationBreakpoint
-	local belowTwoConfig = YarkoCooldowns_SavedVars.BelowTwo == "Y" and {
-		breakpoint = 0,
-		abbreviation = "",
-		significandDivisor = 0.1,
-		fractionDivisor = 10,
-		abbreviationIsGlobal = false,
-	} or {
-		breakpoint = 0,
-		abbreviation = "",
-		significandDivisor = 1,
-		fractionDivisor = 1,
-		abbreviationIsGlobal = false,
-	}
+	local belowTwoBreakpoint = YarkoCooldowns_SavedVars.BelowTwo == "Y" and {
+		threshold = 0,
+		format = "%.1f",
+		components = {
+			step = 0.1,
+		},
+	} --[[@as NumericRuleFormatBreakpoint]] or {
+		threshold = 0,
+		format = "%d",
+		components = {
+			step = 1,
+			rounding = Enum.NumericRuleFormatRounding.Up,
+		},
+	} --[[@as NumericRuleFormatBreakpoint]]
 
-	local breakpointData = CooldownAbbreviateOptions.breakpointData
-	breakpointData[1] = hourConfig
-	breakpointData[2] = minuteConfig
-	breakpointData[3] = secondConfig
-	breakpointData[4] = belowTwoConfig
+	CooldownFormatter:SetBreakpoints({ hourBreakpoint, minuteBreakpoint, secondBreakpoint, belowTwoBreakpoint })
 end
 
 function YarkoCooldowns.CacheOptions()
@@ -424,9 +461,6 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 	if TimeSinceLastUpdate > UpdateInterval then
 		for cooldown, frame in pairs(ActiveCounters) do
 			if frame.duration then
-				-- May be secret
-				local timeLeft = frame.duration:GetRemainingDuration()
-
 				local counterTextMain = frame.textMain
 				local counterTextAlternate = frame.textAlternate
 
@@ -468,7 +502,7 @@ function YarkoCooldowns.OnUpdate(_, elapsed)
 						--@end-alpha@
 
 						-- May be secret
-						local text = AbbreviateNumbers(timeLeft, CooldownAbbreviateOptions)
+						local text = frame.duration:FormatRemainingDuration(CooldownFormatter)
 
 						-- if timeLeft > 3600 then
 						-- 	line1 = YarkoCooldowns_SavedVars.Tenths == "Y"

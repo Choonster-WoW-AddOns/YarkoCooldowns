@@ -272,7 +272,7 @@ function YarkoCooldowns.UpdateCooldowns()
 		YarkoCooldowns.UpdateFont(value)
 	end
 
-	YarkoCooldowns.UpdateCooldownAbbreviateOptions()
+	YarkoCooldowns.UpdateCooldownFormatterOptions()
 	YarkoCooldowns.CacheOptions()
 end
 
